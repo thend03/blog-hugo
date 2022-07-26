@@ -1,0 +1,2 @@
+# blog-hugo
+hugo deploy
