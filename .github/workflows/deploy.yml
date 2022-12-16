@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          submodules: true  # Fetch Hugo themes (true OR recursive)
+          submodules: recursive  # Fetch Hugo themes (true OR recursive)
           fetch-depth: 0    # Fetch all history for .GitInfo and .Lastmod
 
       - name: Setup Hugo
@@ -30,7 +30,17 @@ jobs:
       - name: Build
         run: hugo --minify
 
-      - name: Deploy
+      - name: Get commit message
+          id: commit-message
+          run: |
+            message="$(git show -q --pretty="%B
+            https://github.com/${{ github.repository }}/commit/%H")"
+            message="${message//'%'/'%25'}"
+            message="${message//$'\n'/'%0A'}"
+            message="${message//$'\r'/'%0D'}"
+            echo "::set-output name=message::$message"  
+
+      - name: Deploy on Github
         uses: peaceiris/actions-gh-pages@v3
         # If you're changing the branch from main,
         # also change the `main` in `refs/heads/main`
