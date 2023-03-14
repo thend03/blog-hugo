@@ -1,15 +1,15 @@
-+++ 
+---
 draft = false
 date = 2023-03-14T19:26:34+08:00
 title = "InvalidProviderToken"
 description = ""
 slug = ""
-authors = []
-tags = []
+authors = ["since"]
+tags = ["push"]
 categories = []
 externalLink = ""
 series = []
-+++
+---
 
 ## 背景
 推送业务需要，需要由后台将消息通过apns(苹果统一推送服务)下发到用户的手机上，推送系统通知给用户。
