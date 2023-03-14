@@ -4,11 +4,11 @@ date: 2023-03-14T19:26:34+08:00
 title: "InvalidProviderToken"
 description : "推送失败"
 slug: ""
-authors : ["since"]
-tags :["push"]
-categories : []
-externalLink : ""
-series : []
+authors: ["since"]
+tags: ["push"]
+categories: []
+externalLink: ""
+series: []
 ---
 
 ## 背景
