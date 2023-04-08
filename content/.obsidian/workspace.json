@@ -1,0 +1,157 @@
+{
+  "main": {
+    "id": "ba38cd94fa6eaf28",
+    "type": "split",
+    "children": [
+      {
+        "id": "bf6edaf69b3850c1",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "271819523272b353",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "posts/彩云之南.md",
+                "mode": "source",
+                "source": false
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "b5b1e74b78878462",
+    "type": "split",
+    "children": [
+      {
+        "id": "fa4d52c6de0ac96b",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a20103190ef0d42a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "c3baccc335e429a3",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "b27770b7c79764f2",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 295.5
+  },
+  "right": {
+    "id": "4fb999f43be79069",
+    "type": "split",
+    "children": [
+      {
+        "id": "7212e3f9cc10118c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "cc25b98bea9a953a",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "posts/彩云之南.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "18d1588ae7cdb334",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "posts/彩云之南.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "9679454667461070",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "2d7d7d22b2d57d50",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "posts/彩云之南.md"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false
+    }
+  },
+  "active": "271819523272b353",
+  "lastOpenFiles": [
+    "posts/傻逼腾讯.md",
+    "posts/彩云之南.md",
+    "Pasted image 20230131184732.png",
+    "posts/my-first-post.md",
+    "posts/2023年度规划.md"
+  ]
+}
