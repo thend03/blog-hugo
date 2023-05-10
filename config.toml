@@ -1,7 +1,7 @@
 #cname
 baseURL = "https://blog.thend03.com"
 title = "fayy&fc"
-theme = "hugo-coder"
+theme = "coder"
 languageCode = "zh"
 defaultContentLanguage = "zh"
 paginate = 20
