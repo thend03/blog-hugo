@@ -140,6 +140,7 @@
   },
   "active": "3c8f50ee10c864a4",
   "lastOpenFiles": [
+    "update_git.sh",
     "content/posts/archives.md",
     "themes/coder/layouts/_default/archives.html",
     "themes/coder/theme.toml",
@@ -184,7 +185,6 @@
     "themes/coder/exampleSite/content/posts/emoji-support.md",
     "themes/coder/exampleSite/content/projects.pt-br.md",
     "themes/coder/exampleSite/content/projects.md",
-    "themes/coder/exampleSite/content/contact.md",
-    "themes/coder/exampleSite/content/contact.pt-br.md"
+    "themes/coder/exampleSite/content/contact.md"
   ]
 }
