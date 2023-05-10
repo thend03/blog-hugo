@@ -103,6 +103,7 @@ category = "categories"
 series = "series"
 tag = "tags"
 author = "authors"
+date = "date"
 
 [[params.social]]
 name = "Github"
