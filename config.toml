@@ -1,7 +1,7 @@
 #cname
 baseURL = "https://blog.thend03.com"
 title = "fayy&fc"
-theme = "coder"
+theme = "hugo-coder"
 languageCode = "zh"
 defaultContentLanguage = "zh"
 paginate = 20
@@ -224,7 +224,7 @@ url = "posts/"
 
 [[languages.zh.menu.main]]
 name = "文章归档"
-url = "/archive/"
+url = "posts/archive/"
 
 [[languages.zh.menu.main]]
 name = "项目"
