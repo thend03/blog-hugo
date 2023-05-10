@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "content/posts/archives.md",
+                "file": "content/posts/2022年终总结.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "content/posts/archives.md",
+                "file": "content/posts/2022年终总结.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "content/posts/archives.md",
+                "file": "content/posts/2022年终总结.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "content/posts/archives.md"
+                "file": "content/posts/2022年终总结.md"
               }
             }
           }
@@ -146,10 +146,10 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "3c8f50ee10c864a4",
+  "active": "3d58d33f3b9ce66e",
   "lastOpenFiles": [
-    "update_git.sh",
     "content/posts/archives.md",
+    "update_git.sh",
     "themes/coder/layouts/_default/archives.html",
     "themes/coder/theme.toml",
     "themes/coder/static/fonts/forkawesome-webfont.woff2",
@@ -160,7 +160,6 @@
     "themes/coder/static/fonts",
     "themes/coder/static",
     "themes/coder/resources/_gen/assets/scss/scss/coder.scss_fd4b5b3f9a48bc0c7f005d2f7a4cc30f.json",
-    "themes/coder/resources/_gen/assets/scss/scss/coder.scss_fd4b5b3f9a48bc0c7f005d2f7a4cc30f.content",
     "themes/coder/images/logos/logotype-b.svg",
     "themes/coder/images/logos/logotype-b.png",
     "themes/coder/images/logos/logotype-a.svg",
