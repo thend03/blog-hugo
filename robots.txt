@@ -1,0 +1,2 @@
+User-agent: *
+Sitemap: https://blog.thend03.com/sitemap.xml
