@@ -69,7 +69,10 @@
 </span></span></code></pre></td></tr></table></div></div><p>如上的脚本是删除指定数据库的指定表的过期partition,shell中的一些字段解释如下</p><ul><li>passsword: ck节点的密码，我的ck集群的所有分片/副本的密码是一致的</li><li>cluster: ck集群的名称，通过集群名称查询集群下的所有分片和副本的host</li><li>database: 要删除的数据库</li><li>table: 要删除的具体的表</li><li>end_date: 删除end_date之前的partition，我的表的partition格式是yyyyMMdd</li></ul><p>首先查询system.clusters表，获得集群里的所有节点的host
 然后遍历所有的host，挨个删除本地表上的过期的partition,小于end_date的partition全部删除</p></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
 <span class=item-content>olOwOlo</span></p><p class=copyright-item><span class=item-title>上次更新</span>
-<span class=item-content>2023-05-22</span></p></div><footer class=post-footer><nav class=post-nav><a class=next href=/post/apns%E6%8E%A8%E9%80%81%E5%A4%B1%E8%B4%A5/><span class="next-text nav-default">InvalidProviderToken</span>
+<span class=item-content>2023-05-22</span></p></div><footer class=post-footer><nav class=post-nav><a class=prev href=/post/chatgpt%E6%8A%98%E8%85%BE/><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">折腾chatgpt</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class=next href=/post/apns%E6%8E%A8%E9%80%81%E5%A4%B1%E8%B4%A5/><span class="next-text nav-default">InvalidProviderToken</span>
 <span class="next-text nav-mobile">下一篇</span>
 <i class="iconfont icon-right"></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=social-links><a href=mailto:your@email.com class="iconfont icon-email" title=email></a>
 <a href=http://localhost:1313 class="iconfont icon-stack-overflow" title=stack-overflow></a>
