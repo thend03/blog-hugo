@@ -1,6 +1,7 @@
 baseURL = "https://blog.thend03.com/"
 languageCode = "zh-cn"
 defaultContentLanguage = "zh-cn"                             # en / zh-cn / ... (This field determines which i18n file to use)
+languages = "zh-cn"
 title = "fayy&fc - A super concise theme for Hugo"
 preserveTaxonomyNames = true
 enableRobotsTXT = true
@@ -21,7 +22,7 @@ googleAnalytics = ""      # UA-XXXXXXXX-X
 copyright = ""            # default: author.name ↓        # 默认为下面配置的author.name ↓
 
 [author]                  # essential                     # 必需
-  name = "olOwOlo"
+  name = "since"
 
 [sitemap]                 # essential                     # 必需
   changefreq = "weekly"
@@ -140,8 +141,8 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
     clientSecret = ""       # Your client secret
 
   [params.utterances]       # https://utteranc.es/
-    owner = ""              # Your GitHub ID
-    repo = ""               # The repo to store comments
+    owner = "thend03"              # Your GitHub ID
+    repo = "blog-comments"               # The repo to store comments
 
   [params.gitalk]           # Gitalk is a comment system based on GitHub issues. see https://github.com/gitalk/gitalk
     owner = ""              # Your GitHub ID
@@ -154,12 +155,12 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
   # more info please open https://valine.js.org
   [params.valine]
     enable = false
-    appId = '你的appId'
-    appKey = '你的appKey'
+    appId = 'XtWapcrLhvLmKeTm5PTg0M4D-MdYXbMMI'
+    appKey = 'SP16xTZwllLt0VFt3egK30Bn'
     notify = false  # mail notifier , https://github.com/xCss/Valine/wiki
     verify = false # Verification code
     avatar = 'mm'
-    placeholder = '说点什么吧...'
+    placeholder = '访问量统计'
     visitor = false
 
   [params.flowchartDiagrams]# see https://blog.olowolo.com/example-site/post/js-flowchart-diagrams/
@@ -182,9 +183,9 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
     alipay = "/path/to/your/alipay-qr-code.png"           # 支付宝二维码
 
   [params.social]                                         # 社交链接
-    a-email = "mailto:your@email.com"
+    a-email = "whenevertobefc@outlook.com"
     b-stack-overflow = "http://localhost:1313"
-    c-twitter = "http://localhost:1313"
+    c-twitter = "https://twitter.com/TobeWhenever"
     d-facebook = "http://localhost:1313"
     e-linkedin = "http://localhost:1313"
     f-google = "http://localhost:1313"
@@ -202,6 +203,7 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
 [privacy]
   [privacy.googleAnalytics]
     anonymizeIP = true      # 12.214.31.144 -> 12.214.31.0
+    google_analyics = "G-GZVCWD04LL"
   [privacy.youtube]
     privacyEnhanced = true
 
