@@ -2,8 +2,8 @@
 draft: false
 date: 2023-05-22T20:38:15+08:00
 title: "折腾chatgpt"
-slug: "" 
-tag: ["chatgpt","nav"]
+slug: "search-chatgpt" 
+tags: ["chatgpt","nav"]
 authors: ["since"]
 description: "如何折腾chatgpt"
 ---

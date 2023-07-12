@@ -2,9 +2,9 @@
 draft: false
 date: 2023-05-22T20:28:54+08:00
 title: "clickhouse删除partition"
-slug: ""
+slug: "delete-clickhouse-partition"
 authors: ["since"]
-tag: ["clickhouse"]
+tags: ["clickhouse"]
 description : "删除过期partition"
 ---
 
