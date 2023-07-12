@@ -3,7 +3,7 @@ draft: false
 date: 2023-07-11T22:45:17+08:00
 title: "基于模板文件生成yml"
 slug: "generate-yml-based-on-template" 
-tag: ["shell","yml","yq"]
+tags: ["shell","yml","yq"]
 authors: ["since"]
 description: "使用shell,基于配置文件模板生成yml文件"
 ---
