@@ -1,0 +1,1237 @@
+<!doctype html><html lang=zh-cn><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>dubbo spi - fayy&amp;fc - A super concise theme for Hugo</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="since"><meta name=description content="dubbo spi"><meta name=keywords content="Hugo,since,even"><meta name=generator content="Hugo 0.117.0 with theme even"><link rel=canonical href=https://blog.thend03.com/post/dubbo-spi/><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link href=/sass/main.min.f92fd13721ddf72129410fd8250e73152cc6f2438082b6c0208dc24ee7c13fc4.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous><meta property="og:title" content="dubbo spi"><meta property="og:description" content="dubbo spi"><meta property="og:type" content="article"><meta property="og:url" content="https://blog.thend03.com/post/dubbo-spi/"><meta property="article:section" content="post"><meta property="article:published_time" content="2023-07-12T22:52:55+08:00"><meta property="article:modified_time" content="2023-07-12T22:52:55+08:00"><meta itemprop=name content="dubbo spi"><meta itemprop=description content="dubbo spi"><meta itemprop=datePublished content="2023-07-12T22:52:55+08:00"><meta itemprop=dateModified content="2023-07-12T22:52:55+08:00"><meta itemprop=wordCount content="7012"><meta itemprop=keywords content="dubbo,spi,"><meta name=twitter:card content="summary"><meta name=twitter:title content="dubbo spi"><meta name=twitter:description content="dubbo spi"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script>
+<script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>fayy&amp;fc</a></div><div class=mobile-navbar-icon><span></span>
+<span></span>
+<span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>首页</li></a><a href><li class=mobile-menu-item>关于</li></a><a href=/post/><li class=mobile-menu-item>归档</li></a><a href=/tags/><li class=mobile-menu-item>标签</li></a><a href=/categories/><li class=mobile-menu-item>分类</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>fayy&amp;fc</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>首页</a></li><li class=menu-item><a class=menu-item-link href>关于</a></li><li class=menu-item><a class=menu-item-link href=/post/>归档</a></li><li class=menu-item><a class=menu-item-link href=/tags/>标签</a></li><li class=menu-item><a class=menu-item-link href=/categories/>分类</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>dubbo spi</h1><div class=post-meta><span class=post-time>2023-07-12</span></div></header><div class=post-toc id=post-toc><h2 class=post-toc-title>文章目录</h2><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><ul><li><a href=#spi>SPI</a></li><li><a href=#java-spi>Java SPI</a><ul><li><a href=#物料>物料</a></li><li><a href=#测试过程>测试过程</a></li></ul></li><li><a href=#dubbo-spi>Dubbo SPI</a><ul><li><a href=#物料-1>物料</a></li><li><a href=#extensionloader>ExtensionLoader</a></li><li><a href=#extension>Extension</a></li><li><a href=#adaptive-extension>Adaptive Extension</a></li><li><a href=#warpper>warpper</a></li><li><a href=#ioc>IOC</a></li></ul></li><li><a href=#其他>其他</a></li><li><a href=#参考链接>参考链接</a></li></ul></li></ul></nav></div></div><div class=post-content><h2 id=spi>SPI</h2><p>spi的全称是service provider interface，是一种服务发现机制，动态选择接口的实现类。</p><p>Java中的spi是在META-INF/services提供一个名称为接口class的文件，里面配置具体的接口实现类。使用ServiceLoader加载spi。</p><p>Dubbo的spi是自己实现的，没有使用jdk自带的.Dubbo SPI扩展了很多的能力，包括kv配置，按需加载class和instance并且缓存了class和instance不会重复加载，也提供了更多高级的功能，包括扩展点自适应，扩展点自动激活，扩展点自动装配，扩展点包装等。可以说dubbo的spi功能还是非常丰富的，在dubbo源码里有很重要的地位。</p><h2 id=java-spi>Java SPI</h2><p>JDK提供的SPI,有一个亿点点的小缺点，就是每次都要遍历所有的实现，返回所有实现类的实例，无法按需加载，无法查找指定的实现类。每次想用的话只能进行遍历。</p><p>下面使用示例代码进行演示。</p><h3 id=物料>物料</h3><p>一个简单的接口</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>se</span><span class=p>.</span><span class=nx>spi</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=kd>interface</span> <span class=nx>Animal</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>void</span> <span class=nf>cout</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>2个接口的实现类</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>se</span><span class=p>.</span><span class=nx>spi</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>Cat</span> <span class=nx>implements</span> <span class=nx>Animal</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>void</span> <span class=nf>cout</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>System</span><span class=p>.</span><span class=nx>out</span><span class=p>.</span><span class=nb>println</span><span class=p>(</span><span class=s>&#34;miao miao smh&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>se</span><span class=p>.</span><span class=nx>spi</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>Dog</span> <span class=nx>implements</span> <span class=nx>Comparable</span><span class=p>&lt;</span><span class=nx>Dog</span><span class=p>&gt;{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=nx>size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nf>Dog</span><span class=p>(</span><span class=kt>int</span> <span class=nx>s</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>size</span> <span class=p>=</span> <span class=nx>s</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>String</span> <span class=nf>toString</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>size</span> <span class=o>+</span> <span class=s>&#34;&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=kt>int</span> <span class=nf>compareTo</span><span class=p>(</span><span class=nx>Dog</span> <span class=nx>o</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>size</span> <span class=o>-</span> <span class=nx>o</span><span class=p>.</span><span class=nx>size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>一个测试类</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>public class SpiMain {
+</span></span><span class=line><span class=cl>    public static void main(String[] args) {
+</span></span><span class=line><span class=cl>         ServiceLoader&lt;Animal&gt; animals = ServiceLoader.load(Animal.class);
+</span></span><span class=line><span class=cl>        for (Animal animal:animals) {
+</span></span><span class=line><span class=cl>            animal.cout();
+</span></span><span class=line><span class=cl>            System.out.println(animal.getClass());
+</span></span><span class=line><span class=cl>            System.out.println(animal.hashCode());
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>        ServiceLoader&lt;Animal&gt; load = ServiceLoader.load(Animal.class);
+</span></span><span class=line><span class=cl>        for (Animal animal:load) {
+</span></span><span class=line><span class=cl>            animal.cout();
+</span></span><span class=line><span class=cl>            System.out.println(animal.getClass());
+</span></span><span class=line><span class=cl>            System.out.println(animal.hashCode());
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>    }
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><p>Resources下的spi配置文件</p><p>文件名为接口全限定名com.fc.se.spi.Animal，文件内容为所有的实现类的接口全限定名</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>com.fc.se.spi.Cat
+</span></span></code></pre></td></tr></table></div></div><p>![image-20230712233205259](/Users/since/Library/Application Support/typora-user-images/image-20230712233205259.png)</p><h3 id=测试过程>测试过程</h3><p>首先执行下main方法</p><p>![image-20230712233855450](/Users/since/Library/Application Support/typora-user-images/image-20230712233855450.png)</p><p>根据输出结果可以看到，每次调用ServiceLoader#load方法每次得到的都是新的实例，而且没有任何根据指定字段获取指定实例的方法。如果有的实例在实例化的时候存在比较耗时的操作，或者spi的实现非常多，会非常的消耗资源。</p><p>JDK的SPI方法比较简单，不看源码大概猜一下就是去指定目录读取实现类的class，然后反射创建对应的实例。</p><h2 id=dubbo-spi>Dubbo SPI</h2><p>Dubbo自己实现了一套spi，解决了jdk spi的一些缺点，并且加上了很多的扩展功能，非常的强大。</p><p>读取如下几个目录的配置文件</p><ul><li>META-INF/dubbo/internal/</li><li>META-INF/dubbo/external/</li><li>META-INF/dubbo/</li><li>META-INF/services/</li></ul><p>dubbo兼容了jdk spi的目录，并扩展了自身的spi目录，其中internal和external是dubbo自己的扩展文件目录，META-INF/dubbo/这个目录可以放置我们的自定义扩展配置。</p><h3 id=物料-1>物料</h3><p>添加dubbo依赖，我测试用的是dubbo-3.2.0-beta4，spi机制基本上一样，看的时候对应下自己的版本，可能会有差异。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl> &lt;dependency&gt;
+</span></span><span class=line><span class=cl>     &lt;groupId&gt;org.apache.dubbo&lt;/groupId&gt;
+</span></span><span class=line><span class=cl>     &lt;artifactId&gt;dubbo&lt;/artifactId&gt;
+</span></span><span class=line><span class=cl>     &lt;version&gt;3.2.0&lt;/version&gt;
+</span></span><span class=line><span class=cl>&lt;/dependency&gt;
+</span></span></code></pre></td></tr></table></div></div><p>一个添加了@SPI注解的接口，指定了默认的spi实现,有几个方法添加了@Adaptive注解，用于测试自适应扩展点。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>URL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>extension</span><span class=p>.</span><span class=nx>Adaptive</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>extension</span><span class=p>.</span><span class=nx>SPI</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=err>@</span><span class=nf>SPI</span><span class=p>(</span><span class=s>&#34;dog&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=kd>interface</span> <span class=nx>SimpleExt</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm>     * yell
+</span></span></span><span class=line><span class=cl><span class=cm>     *
+</span></span></span><span class=line><span class=cl><span class=cm>     * @param url url
+</span></span></span><span class=line><span class=cl><span class=cm>     * @param s   s
+</span></span></span><span class=line><span class=cl><span class=cm>     * @return s
+</span></span></span><span class=line><span class=cl><span class=cm>     */</span>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nf>Adaptive</span><span class=p>({</span><span class=s>&#34;key1&#34;</span><span class=p>,</span> <span class=s>&#34;key2&#34;</span><span class=p>})</span>
+</span></span><span class=line><span class=cl>    <span class=nx>String</span> <span class=nf>yell</span><span class=p>(</span><span class=nx>URL</span> <span class=nx>url</span><span class=p>,</span> <span class=nx>String</span> <span class=nx>s</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm>     * echo
+</span></span></span><span class=line><span class=cl><span class=cm>     *
+</span></span></span><span class=line><span class=cl><span class=cm>     * @param url url
+</span></span></span><span class=line><span class=cl><span class=cm>     * @param s   s
+</span></span></span><span class=line><span class=cl><span class=cm>     * @return s
+</span></span></span><span class=line><span class=cl><span class=cm>     */</span>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Adaptive</span>
+</span></span><span class=line><span class=cl>    <span class=nx>String</span> <span class=nf>echo</span><span class=p>(</span><span class=nx>URL</span> <span class=nx>url</span><span class=p>,</span> <span class=nx>String</span> <span class=nx>s</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm>     * no adaptive
+</span></span></span><span class=line><span class=cl><span class=cm>     *
+</span></span></span><span class=line><span class=cl><span class=cm>     * @param url url
+</span></span></span><span class=line><span class=cl><span class=cm>     * @param i   i
+</span></span></span><span class=line><span class=cl><span class=cm>     * @return i
+</span></span></span><span class=line><span class=cl><span class=cm>     */</span>
+</span></span><span class=line><span class=cl>    <span class=nx>String</span> <span class=nf>bang</span><span class=p>(</span><span class=nx>URL</span> <span class=nx>url</span><span class=p>,</span> <span class=kt>int</span> <span class=nx>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>2个实现了接口的普普通通实现类</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>URL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>CatExt</span> <span class=nx>implements</span> <span class=nx>SimpleExt</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>String</span> <span class=nf>yell</span><span class=p>(</span><span class=nx>URL</span> <span class=nx>url</span><span class=p>,</span> <span class=nx>String</span> <span class=nx>s</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s>&#34;yell catExt: &#34;</span> <span class=o>+</span> <span class=nx>s</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>String</span> <span class=nf>echo</span><span class=p>(</span><span class=nx>URL</span> <span class=nx>url</span><span class=p>,</span> <span class=nx>String</span> <span class=nx>s</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s>&#34;echo catExt: &#34;</span> <span class=o>+</span> <span class=nx>s</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>String</span> <span class=nf>bang</span><span class=p>(</span><span class=nx>URL</span> <span class=nx>url</span><span class=p>,</span> <span class=kt>int</span> <span class=nx>i</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s>&#34;bang catExt: &#34;</span> <span class=o>+</span> <span class=nx>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>URL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>DogExt</span> <span class=nx>implements</span> <span class=nx>SimpleExt</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>String</span> <span class=nf>yell</span><span class=p>(</span><span class=nx>URL</span> <span class=nx>url</span><span class=p>,</span> <span class=nx>String</span> <span class=nx>s</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s>&#34;yell dogExt: &#34;</span> <span class=o>+</span> <span class=nx>s</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>String</span> <span class=nf>echo</span><span class=p>(</span><span class=nx>URL</span> <span class=nx>url</span><span class=p>,</span> <span class=nx>String</span> <span class=nx>s</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s>&#34;echo dogExt: &#34;</span> <span class=o>+</span> <span class=nx>s</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>String</span> <span class=nf>bang</span><span class=p>(</span><span class=nx>URL</span> <span class=nx>url</span><span class=p>,</span> <span class=kt>int</span> <span class=nx>i</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s>&#34;bang dogExt: &#34;</span> <span class=o>+</span> <span class=nx>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>一个普通的测试类</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>URL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>extension</span><span class=p>.</span><span class=nx>ExtensionLoader</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>url</span><span class=p>.</span><span class=nx>component</span><span class=p>.</span><span class=nx>URLAddress</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>url</span><span class=p>.</span><span class=nx>component</span><span class=p>.</span><span class=nx>URLParam</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>java</span><span class=p>.</span><span class=nx>util</span><span class=p>.</span><span class=nx>HashMap</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>DubboSpi</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>static</span> <span class=nx>void</span> <span class=nf>main</span><span class=p>(</span><span class=nx>String</span><span class=p>[]</span> <span class=nx>args</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>ExtensionLoader</span><span class=p>&lt;</span><span class=nx>SimpleExt</span><span class=p>&gt;</span> <span class=nx>extensionLoader</span> <span class=p>=</span> <span class=nx>ExtensionLoader</span><span class=p>.</span><span class=nf>getExtensionLoader</span><span class=p>(</span><span class=nx>SimpleExt</span><span class=p>.</span><span class=nx>class</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>SimpleExt</span> <span class=nx>dog</span> <span class=p>=</span> <span class=nx>extensionLoader</span><span class=p>.</span><span class=nf>getExtension</span><span class=p>(</span><span class=s>&#34;dog&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>SimpleExt</span> <span class=nx>adaptiveExtension</span> <span class=p>=</span> <span class=nx>extensionLoader</span><span class=p>.</span><span class=nf>getAdaptiveExtension</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=nx>dog</span><span class=p>.</span><span class=nf>yell</span><span class=p>(</span><span class=nx>null</span><span class=p>,</span> <span class=s>&#34;dogdog&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>URLAddress</span> <span class=nx>urlAddress</span> <span class=p>=</span> <span class=nx>new</span> <span class=nf>URLAddress</span><span class=p>(</span><span class=s>&#34;127.0.0.1&#34;</span><span class=p>,</span> <span class=mi>20880</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>URLParam</span> <span class=nx>parse</span> <span class=p>=</span> <span class=nx>URLParam</span><span class=p>.</span><span class=nf>parse</span><span class=p>(</span><span class=nx>new</span> <span class=nx>HashMap</span><span class=p>&lt;&gt;());</span>
+</span></span><span class=line><span class=cl>        <span class=nx>adaptiveExtension</span><span class=p>.</span><span class=nf>echo</span><span class=p>(</span><span class=nx>new</span> <span class=nf>URL</span><span class=p>(</span><span class=nx>urlAddress</span><span class=p>,</span> <span class=nx>parse</span><span class=p>),</span> <span class=s>&#34;dogs&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>SimpleExt</span> <span class=nx>dog1</span> <span class=p>=</span> <span class=nx>extensionLoader</span><span class=p>.</span><span class=nf>getExtension</span><span class=p>(</span><span class=s>&#34;dog&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>dog1</span><span class=p>.</span><span class=nf>yell</span><span class=p>(</span><span class=nx>null</span><span class=p>,</span> <span class=s>&#34;dog1&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>resources下在META-INF/dubbo下的spi配置文件，文件名为接口的全限定名com.fc.rpc.dubbo.SimpleExt，文件内容是kv配置，指定哪个key对应哪个实现类</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>dog=com.fc.rpc.dubbo.DogExt
+</span></span><span class=line><span class=cl>cat=com.fc.rpc.dubbo.CatExt
+</span></span></code></pre></td></tr></table></div></div><p>![image-20230714164535594](/Users/since/Library/Application Support/typora-user-images/image-20230714164535594.png)</p><p>基本的准备工作做好了，下面先根据DubboSpi的main方法做一下测试</p><h3 id=extensionloader>ExtensionLoader</h3><p>每一个接口类对应唯一一个ExtensionLoader实例</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>public static void main(String[] args) {
+</span></span><span class=line><span class=cl>        ExtensionLoader&lt;SimpleExt&gt; extensionLoader = ExtensionLoader.getExtensionLoader(SimpleExt.class);
+</span></span><span class=line><span class=cl>        ExtensionLoader&lt;SimpleExt&gt; extensionLoader1 = ExtensionLoader.getExtensionLoader(SimpleExt.class);
+</span></span><span class=line><span class=cl>        System.out.println(System.identityHashCode(extensionLoader));
+</span></span><span class=line><span class=cl>        System.out.println(System.identityHashCode(extensionLoader1));  
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><p>控制台输出</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>1208203046
+</span></span><span class=line><span class=cl>1208203046
+</span></span></code></pre></td></tr></table></div></div><p>![image-20230714153000173](/Users/since/Library/Application Support/typora-user-images/image-20230714153000173.png)</p><p>根据debug和控制台输出，可以看出多次获取的是同一个extensinonLoader实例</p><h3 id=extension>Extension</h3><p>配置文件里配置了如下2个kv</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>dog=com.fc.rpc.dubbo.DogExt
+</span></span><span class=line><span class=cl>cat=com.fc.rpc.dubbo.CatExt
+</span></span></code></pre></td></tr></table></div></div><p>我们获取spi实现的时候，可以指定key去获取</p><p>获取extension有如下几个api</p><ul><li>getExtension(String name)</li><li>getExtension(String name, boolean wrap)</li><li>getDefaultExtension()</li></ul><p>第一个是获取指定key的扩展实现，示例中是dog</p><p>第二个是获取包装类，这个是dubbo中的自动包装的实现，使用warp实现了类似aop的功能，包装类持有spi扩展的实例</p><p>第三个是获取默认的扩展类，在spi注解上标记了默认扩展实现，类似@SPI(&ldquo;dog&rdquo;)，默认的扩展实现就是dog</p><p>接下来试验下这3个方法</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>public static void main(String[] args) {
+</span></span><span class=line><span class=cl>        ExtensionLoader&lt;SimpleExt&gt; extensionLoader = ExtensionLoader.getExtensionLoader(SimpleExt.class);
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        SimpleExt defaultExtension = extensionLoader.getDefaultExtension();
+</span></span><span class=line><span class=cl>        SimpleExt dog = extensionLoader.getExtension(&#34;dog&#34;);
+</span></span><span class=line><span class=cl>        SimpleExt dog2 = extensionLoader.getExtension(&#34;dog&#34;, true);
+</span></span><span class=line><span class=cl>        SimpleExt cat = extensionLoader.getExtension(&#34;cat&#34;);
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><p>![image-20230714164705658](/Users/since/Library/Application Support/typora-user-images/image-20230714164705658.png)</p><p>根据结果可以看到defaultExtension/dog/dog2都是同一个实例，类型为com.fc.rpc.dubbo.DogExt</p><p>另一个是类型为com.fc.rpc.dubbo.CatExt的实例，同一个key只会生成唯一一个对应实现类的实例。</p><h3 id=adaptive-extension>Adaptive Extension</h3><p>上面一小节讲的是普通的SPI的扩展实现，得到的就是对应的接口实现类的实例，dubbo还提供了另外一种扩展实现，叫做自适应扩展。</p><p>先看一下官网的描述:</p><blockquote><p>先说明下自适应扩展类的使用场景。比如我们有需求，在调用某一个方法时，基于参数选择调用到不同的实现类。和工厂方法有些类似，基于不同的参数，构造出不同的实例对象。 在 Dubbo 中实现的思路和这个差不多，不过 Dubbo 的实现更加灵活，它的实现和策略模式有些类似。每一种扩展类相当于一种策略，基于 URL 消息总线，将参数传递给 ExtensionLoader，通过 ExtensionLoader 基于参数加载对应的扩展类，实现运行时动态调用到目标实例上。</p></blockquote><p>实际上就是根据url的参数动态选择具体的实现类</p><p>使用自适应扩展，需要在接口或者方法上添加@Adaptive注解</p><p>看下示例</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>import org.apache.dubbo.common.URL;
+</span></span><span class=line><span class=cl>import org.apache.dubbo.common.extension.Adaptive;
+</span></span><span class=line><span class=cl>import org.apache.dubbo.common.extension.SPI;
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>/**
+</span></span><span class=line><span class=cl> * simle ext
+</span></span><span class=line><span class=cl> *
+</span></span><span class=line><span class=cl> * @author since
+</span></span><span class=line><span class=cl> * @date 2023-07-10 10:03
+</span></span><span class=line><span class=cl> **/
+</span></span><span class=line><span class=cl>@SPI(&#34;dog&#34;)
+</span></span><span class=line><span class=cl>public interface SimpleExt {
+</span></span><span class=line><span class=cl>    /**
+</span></span><span class=line><span class=cl>     * yell
+</span></span><span class=line><span class=cl>     *
+</span></span><span class=line><span class=cl>     * @param url url
+</span></span><span class=line><span class=cl>     * @param s   s
+</span></span><span class=line><span class=cl>     * @return s
+</span></span><span class=line><span class=cl>     */
+</span></span><span class=line><span class=cl>    @Adaptive({&#34;key1&#34;, &#34;key2&#34;})
+</span></span><span class=line><span class=cl>    String yell(URL url, String s);
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    /**
+</span></span><span class=line><span class=cl>     * echo
+</span></span><span class=line><span class=cl>     *
+</span></span><span class=line><span class=cl>     * @param url url
+</span></span><span class=line><span class=cl>     * @param s   s
+</span></span><span class=line><span class=cl>     * @return s
+</span></span><span class=line><span class=cl>     */
+</span></span><span class=line><span class=cl>    @Adaptive
+</span></span><span class=line><span class=cl>    String echo(URL url, String s);
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    /**
+</span></span><span class=line><span class=cl>     * no adaptive
+</span></span><span class=line><span class=cl>     *
+</span></span><span class=line><span class=cl>     * @param url url
+</span></span><span class=line><span class=cl>     * @param i   i
+</span></span><span class=line><span class=cl>     * @return i
+</span></span><span class=line><span class=cl>     */
+</span></span><span class=line><span class=cl>    String bang(URL url, int i);
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><p>有2种用法，一种是取默认值的，默认的@Adaptive取的是spi的默认扩展实现，本例是dog，一种是根据key的值来获取对应扩展的，根据url中取到的extName获取对应的扩展实现。</p><p>获取adaptive extension使用的是<code>org.apache.dubbo.common.extension.ExtensionLoader#getAdaptiveExtension</code>，这个方法的得到的是一个interface$Adaptive的class实例,本例中的adaptive extension的class的<code>com.fc.rpc.dubbo.SimpleExt$Adaptive</code></p><p>看下示例代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl> public static void main(String[] args) {
+</span></span><span class=line><span class=cl>        ExtensionLoader&lt;SimpleExt&gt; extensionLoader = ExtensionLoader.getExtensionLoader(SimpleExt.class);
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        SimpleExt adaptiveExtension = extensionLoader.getAdaptiveExtension();
+</span></span><span class=line><span class=cl>        dog.yell(null, &#34;dogdog&#34;);
+</span></span><span class=line><span class=cl>        URLAddress urlAddress = new URLAddress(&#34;127.0.0.1&#34;, 20880);
+</span></span><span class=line><span class=cl>        URLParam parse = URLParam.parse(new HashMap&lt;&gt;());
+</span></span><span class=line><span class=cl>        adaptiveExtension.echo(new URL(urlAddress, parse), &#34;dogs&#34;);
+</span></span><span class=line><span class=cl>        SimpleExt dog1 = extensionLoader.getExtension(&#34;dog&#34;);
+</span></span><span class=line><span class=cl>        dog1.yell(null, &#34;dog1&#34;);
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><p>![image-20230714172924754](/Users/since/Library/Application Support/typora-user-images/image-20230714172924754.png)</p><p>echo方法使用的是默认的参数，所以会执行到spi的默认扩展dog，可以看一下下一步</p><p>![image-20230714173117260](/Users/since/Library/Application Support/typora-user-images/image-20230714173117260.png)</p><p>在来看一下SimpleExt$Adaptive的class文件，这个是通过javaassist直接拼接出来的class文件，控制台会输出这个class文件</p><p>![image-20230714173302139](/Users/since/Library/Application Support/typora-user-images/image-20230714173302139.png)</p><p>完整的class文件如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>model</span><span class=p>.</span><span class=nx>ScopeModel</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>model</span><span class=p>.</span><span class=nx>ScopeModelUtil</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * @author
+</span></span></span><span class=line><span class=cl><span class=cm> * @date 2023-07-10 13:11
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>SimpleExt</span><span class=err>$</span><span class=nx>Adaptive</span> <span class=nx>implements</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>SimpleExt</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>java</span><span class=p>.</span><span class=nx>lang</span><span class=p>.</span><span class=nx>String</span> <span class=nf>yell</span><span class=p>(</span><span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>URL</span> <span class=nx>arg0</span><span class=p>,</span> <span class=nx>java</span><span class=p>.</span><span class=nx>lang</span><span class=p>.</span><span class=nx>String</span> <span class=nx>arg1</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nx>arg0</span> <span class=o>==</span> <span class=nx>null</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>throw</span> <span class=nx>new</span> <span class=nf>IllegalArgumentException</span><span class=p>(</span><span class=s>&#34;url == null&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>URL</span> <span class=nx>url</span> <span class=p>=</span> <span class=nx>arg0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nx>String</span> <span class=nx>extName</span> <span class=p>=</span> <span class=nx>url</span><span class=p>.</span><span class=nf>getParameter</span><span class=p>(</span><span class=s>&#34;key1&#34;</span><span class=p>,</span> <span class=nx>url</span><span class=p>.</span><span class=nf>getParameter</span><span class=p>(</span><span class=s>&#34;key2&#34;</span><span class=p>,</span> <span class=s>&#34;dog&#34;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nx>extName</span> <span class=o>==</span> <span class=nx>null</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>throw</span> <span class=nx>new</span> <span class=nf>IllegalStateException</span><span class=p>(</span><span class=s>&#34;Failed to get extension (com.fc.rpc.dubbo.SimpleExt) name from url (&#34;</span> <span class=o>+</span> <span class=nx>url</span><span class=p>.</span><span class=nf>toString</span><span class=p>()</span> <span class=o>+</span> <span class=s>&#34;) use keys([key1, key2])&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nx>ScopeModel</span> <span class=nx>scopeModel</span> <span class=p>=</span> <span class=nx>ScopeModelUtil</span><span class=p>.</span><span class=nf>getOrDefault</span><span class=p>(</span><span class=nx>url</span><span class=p>.</span><span class=nf>getScopeModel</span><span class=p>(),</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>SimpleExt</span><span class=p>.</span><span class=nx>class</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>SimpleExt</span> <span class=nx>extension</span> <span class=p>=</span> <span class=p>(</span><span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>SimpleExt</span><span class=p>)</span> <span class=nx>scopeModel</span><span class=p>.</span><span class=nf>getExtensionLoader</span><span class=p>(</span><span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>SimpleExt</span><span class=p>.</span><span class=nx>class</span><span class=p>).</span><span class=nf>getExtension</span><span class=p>(</span><span class=nx>extName</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>extension</span><span class=p>.</span><span class=nf>yell</span><span class=p>(</span><span class=nx>arg0</span><span class=p>,</span> <span class=nx>arg1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>java</span><span class=p>.</span><span class=nx>lang</span><span class=p>.</span><span class=nx>String</span> <span class=nf>echo</span><span class=p>(</span><span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>URL</span> <span class=nx>arg0</span><span class=p>,</span> <span class=nx>java</span><span class=p>.</span><span class=nx>lang</span><span class=p>.</span><span class=nx>String</span> <span class=nx>arg1</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nx>arg0</span> <span class=o>==</span> <span class=nx>null</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>throw</span> <span class=nx>new</span> <span class=nf>IllegalArgumentException</span><span class=p>(</span><span class=s>&#34;url == null&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>URL</span> <span class=nx>url</span> <span class=p>=</span> <span class=nx>arg0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=nx>String</span> <span class=nx>extName</span> <span class=p>=</span> <span class=nx>url</span><span class=p>.</span><span class=nf>getParameter</span><span class=p>(</span><span class=s>&#34;simple.ext&#34;</span><span class=p>,</span> <span class=s>&#34;dog&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=nx>extName</span> <span class=o>==</span> <span class=nx>null</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=nx>throw</span> <span class=nx>new</span> <span class=nf>IllegalStateException</span><span class=p>(</span><span class=s>&#34;Failed to get extension (com.fc.rpc.dubbo.SimpleExt) name from url (&#34;</span> <span class=o>+</span> <span class=nx>url</span><span class=p>.</span><span class=nf>toString</span><span class=p>()</span> <span class=o>+</span> <span class=s>&#34;) use keys([simple.ext])&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=nx>ScopeModel</span> <span class=nx>scopeModel</span> <span class=p>=</span> <span class=nx>ScopeModelUtil</span><span class=p>.</span><span class=nf>getOrDefault</span><span class=p>(</span><span class=nx>url</span><span class=p>.</span><span class=nf>getScopeModel</span><span class=p>(),</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>SimpleExt</span><span class=p>.</span><span class=nx>class</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>SimpleExt</span> <span class=nx>extension</span> <span class=p>=</span> <span class=p>(</span><span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>SimpleExt</span><span class=p>)</span> <span class=nx>scopeModel</span><span class=p>.</span><span class=nf>getExtensionLoader</span><span class=p>(</span><span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>SimpleExt</span><span class=p>.</span><span class=nx>class</span><span class=p>).</span><span class=nf>getExtension</span><span class=p>(</span><span class=nx>extName</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nx>extension</span><span class=p>.</span><span class=nf>echo</span><span class=p>(</span><span class=nx>arg0</span><span class=p>,</span> <span class=nx>arg1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>java</span><span class=p>.</span><span class=nx>lang</span><span class=p>.</span><span class=nx>String</span> <span class=nf>bang</span><span class=p>(</span><span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>URL</span> <span class=nx>arg0</span><span class=p>,</span> <span class=kt>int</span> <span class=nx>arg1</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>throw</span> <span class=nx>new</span> <span class=nf>UnsupportedOperationException</span><span class=p>(</span><span class=s>&#34;The method public abstract java.lang.String com.fc.rpc.dubbo.SimpleExt.bang(org.apache.dubbo.common.URL,int) of interface com.fc.rpc.dubbo.SimpleExt is not adaptive method!&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>看下生成的class，接口里一共定义了3个方法，2个方法打上了@Adaptive注解，其中由于bang()没有打注解，所以通过代理类访问bang访问会直接报错</p><p>echo方法由于使用的是默认的值，不需要根据url里的取值去动态获取ext，所以是会走到默认的扩展点dog里，这个上面debug已经说明了。</p><p>具体获取ext是这行代码,@Adaptive没有设置具体的参数，会将接口类拆成simple.ext这样去获取extName,取不到的话会取默认值dog</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>String extName = url.getParameter(&#34;simple.ext&#34;, &#34;dog&#34;);
+</span></span></code></pre></td></tr></table></div></div><p>yell方法由于配置了参数，所以实际获取extName的行为是这样</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>String extName = url.getParameter(&#34;key1&#34;, url.getParameter(&#34;key2&#34;, &#34;dog&#34;));
+</span></span></code></pre></td></tr></table></div></div><p>根据extName获取最终的扩展实现</p><p>自适应扩展先写到这，后面的案例再补充</p><h3 id=warpper>warpper</h3><p>dubbo还有一种warper的用法，就是有一个spi的扩展类，有一个参数的构造函数，然后类型是扩展类的类型，就会实现warpper的效果，类似aop的功能，这么说可能有点晦涩，写代码看下效果吧</p><h4 id=物料-2>物料</h4><p>配置文件，照例我们还是先写配置文件，再META-INF/dubbo下新建一个文件命名为<code>com.fc.rpc.dubbo.WrapperExt</code>的配置文件，这个名称就是我们测试wrapper的接口全路径</p><p>配置文件里定义kv，前2行是目标实现，类似于我们上个例子的dogExt和catExt，后2行是包装实现，调用一个扩展，会按顺序执行tortoiseWrapper和rabbitWrapper，执行完扩展之后，会执行目标实现，比如tortoise和rabbit。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>tortoise=com.fc.rpc.dubbo.TortoiseExt
+</span></span><span class=line><span class=cl>rabbit=com.fc.rpc.dubbo.RabbitExt
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>tortoiseWrapper=com.fc.rpc.dubbo.TortoiseWrapperExt
+</span></span><span class=line><span class=cl>rabbitWrapper=com.fc.rpc.dubbo.RabbitWrapperExt
+</span></span></code></pre></td></tr></table></div></div><p>SPI接口类</p><p>定义了一个WrapperExt接口，打上@SPI注解，这个和上面的SimpleExt一样</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>extension</span><span class=p>.</span><span class=nx>SPI</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * warper ext
+</span></span></span><span class=line><span class=cl><span class=cm> *
+</span></span></span><span class=line><span class=cl><span class=cm> * @author since
+</span></span></span><span class=line><span class=cl><span class=cm> * @date 2023-08-03 08:37
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=err>@</span><span class=nx>SPI</span>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=kd>interface</span> <span class=nx>WrapperExt</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm>     * wrapper
+</span></span></span><span class=line><span class=cl><span class=cm>     *
+</span></span></span><span class=line><span class=cl><span class=cm>     * @param wrapper wrapper
+</span></span></span><span class=line><span class=cl><span class=cm>     */</span>
+</span></span><span class=line><span class=cl>    <span class=nx>void</span> <span class=nf>wrapper</span><span class=p>(</span><span class=nx>String</span> <span class=nx>wrapper</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>原始实现</p><p>有2个原始实现类，实现了WrapperExt,这2个和上面的DogExt和CatExt含义一样</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * @author
+</span></span></span><span class=line><span class=cl><span class=cm> * @date 2023-08-03 08:48
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>TortoiseExt</span> <span class=nx>implements</span> <span class=nx>WrapperExt</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>void</span> <span class=nf>wrapper</span><span class=p>(</span><span class=nx>String</span> <span class=nx>wrapper</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>System</span><span class=p>.</span><span class=nx>out</span><span class=p>.</span><span class=nb>println</span><span class=p>(</span><span class=s>&#34;tortoise self: &#34;</span> <span class=o>+</span> <span class=nx>wrapper</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * @author
+</span></span></span><span class=line><span class=cl><span class=cm> * @date 2023-08-03 08:48
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>RabbitExt</span> <span class=nx>implements</span> <span class=nx>WrapperExt</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>void</span> <span class=nf>wrapper</span><span class=p>(</span><span class=nx>String</span> <span class=nx>wrapper</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>System</span><span class=p>.</span><span class=nx>out</span><span class=p>.</span><span class=nb>println</span><span class=p>(</span><span class=s>&#34;rabbit self: {}&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>有2个包装实现类，这个和原始实现类不同的是里面有个类型为WrapperExt的成员变量，有一个含参构造函数，用于初始化成员变量</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * @author since
+</span></span></span><span class=line><span class=cl><span class=cm> * @date 2023-08-03 08:55
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>TortoiseWrapperExt</span> <span class=nx>implements</span> <span class=nx>WrapperExt</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>private</span> <span class=nx>final</span> <span class=nx>WrapperExt</span> <span class=nx>wrapperExt</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nf>TortoiseWrapperExt</span><span class=p>(</span><span class=nx>WrapperExt</span> <span class=nx>wrapperExt</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>this</span><span class=p>.</span><span class=nx>wrapperExt</span> <span class=p>=</span> <span class=nx>wrapperExt</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>void</span> <span class=nf>wrapper</span><span class=p>(</span><span class=nx>String</span> <span class=nx>wrapper</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>System</span><span class=p>.</span><span class=nx>out</span><span class=p>.</span><span class=nb>println</span><span class=p>(</span><span class=s>&#34;tortoise wrapper: &#34;</span> <span class=o>+</span> <span class=nx>wrapper</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>wrapperExt</span><span class=p>.</span><span class=nf>wrapper</span><span class=p>(</span><span class=nx>wrapper</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * @author since
+</span></span></span><span class=line><span class=cl><span class=cm> * @date 2023-08-03 08:55
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>RabbitWrapperExt</span> <span class=nx>implements</span> <span class=nx>WrapperExt</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>private</span> <span class=nx>final</span> <span class=nx>WrapperExt</span> <span class=nx>wrapperExt</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nf>RabbitWrapperExt</span><span class=p>(</span><span class=nx>WrapperExt</span> <span class=nx>wrapperExt</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>this</span><span class=p>.</span><span class=nx>wrapperExt</span> <span class=p>=</span> <span class=nx>wrapperExt</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>void</span> <span class=nf>wrapper</span><span class=p>(</span><span class=nx>String</span> <span class=nx>wrapper</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>System</span><span class=p>.</span><span class=nx>out</span><span class=p>.</span><span class=nb>println</span><span class=p>(</span><span class=s>&#34;rabbit wrapper: &#34;</span><span class=o>+</span><span class=nx>wrapper</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>wrapperExt</span><span class=p>.</span><span class=nf>wrapper</span><span class=p>(</span><span class=nx>wrapper</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>一个测试类，用于执行测试方法</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl>	<span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>extension</span><span class=p>.</span><span class=nx>ExtensionLoader</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * spi wrapper
+</span></span></span><span class=line><span class=cl><span class=cm> * @author since
+</span></span></span><span class=line><span class=cl><span class=cm> * @date 2023-08-05 08:50
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>SpiWrapper</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>static</span> <span class=nx>void</span> <span class=nf>main</span><span class=p>(</span><span class=nx>String</span><span class=p>[]</span> <span class=nx>args</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>ExtensionLoader</span><span class=p>&lt;</span><span class=nx>WrapperExt</span><span class=p>&gt;</span> <span class=nx>extensionLoader</span> <span class=p>=</span> <span class=nx>ExtensionLoader</span><span class=p>.</span><span class=nf>getExtensionLoader</span><span class=p>(</span><span class=nx>WrapperExt</span><span class=p>.</span><span class=nx>class</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>WrapperExt</span> <span class=nx>tortoise</span> <span class=p>=</span> <span class=nx>extensionLoader</span><span class=p>.</span><span class=nf>getExtension</span><span class=p>(</span><span class=s>&#34;tortoise&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>tortoise</span><span class=p>.</span><span class=nf>wrapper</span><span class=p>(</span><span class=s>&#34;abandon&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>System</span><span class=p>.</span><span class=nx>out</span><span class=p>.</span><span class=nb>println</span><span class=p>(</span><span class=s>&#34;###################&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>WrapperExt</span> <span class=nx>rabbit</span> <span class=p>=</span> <span class=nx>extensionLoader</span><span class=p>.</span><span class=nf>getExtension</span><span class=p>(</span><span class=s>&#34;rabbit&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>rabbit</span><span class=p>.</span><span class=nf>wrapper</span><span class=p>(</span><span class=s>&#34;give up&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=测试>测试</h4><p>先简单跑一下main函数,执行结果如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>rabbit wrapper: abandon
+</span></span><span class=line><span class=cl>tortoise wrapper: abandon
+</span></span><span class=line><span class=cl>tortoise self: abandon
+</span></span><span class=line><span class=cl>###################
+</span></span><span class=line><span class=cl>rabbit wrapper: give up
+</span></span><span class=line><span class=cl>tortoise wrapper: give up
+</span></span><span class=line><span class=cl>rabbit self: give up
+</span></span></code></pre></td></tr></table></div></div><p>可以看到先是按顺序执行了2个wrapper包装类，然后在执行到了自身实现类。</p><p>这个就是静态代理的用法，通过有参构造函数，反射构造包装类，先执行包装类，最终调用到的就是目标类。</p><h4 id=代码实现>代码实现</h4><p>通过org.apache.dubbo.common.extension.ExtensionLoader#getExtension(java.lang.String)进行调用，wrapper默认是true，所以获取到的构造参数都是会进行包装判断的，具体看下面的代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>    private T createExtension(String name, boolean wrap) {
+</span></span><span class=line><span class=cl>        Class&lt;?&gt; clazz = getExtensionClasses().get(name);
+</span></span><span class=line><span class=cl>        if (clazz == null || unacceptableExceptions.contains(name)) {
+</span></span><span class=line><span class=cl>            throw findException(name);
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>        try {
+</span></span><span class=line><span class=cl>            T instance = (T) extensionInstances.get(clazz);
+</span></span><span class=line><span class=cl>            if (instance == null) {
+</span></span><span class=line><span class=cl>                extensionInstances.putIfAbsent(clazz, createExtensionInstance(clazz));
+</span></span><span class=line><span class=cl>                instance = (T) extensionInstances.get(clazz);
+</span></span><span class=line><span class=cl>                instance = postProcessBeforeInitialization(instance, name);
+</span></span><span class=line><span class=cl>                injectExtension(instance);
+</span></span><span class=line><span class=cl>                instance = postProcessAfterInitialization(instance, name);
+</span></span><span class=line><span class=cl>            }
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            //看这里
+</span></span><span class=line><span class=cl>            if (wrap) {
+</span></span><span class=line><span class=cl>                List&lt;Class&lt;?&gt;&gt; wrapperClassesList = new ArrayList&lt;&gt;();
+</span></span><span class=line><span class=cl>                if (cachedWrapperClasses != null) {
+</span></span><span class=line><span class=cl>                    wrapperClassesList.addAll(cachedWrapperClasses);
+</span></span><span class=line><span class=cl>                    wrapperClassesList.sort(WrapperComparator.COMPARATOR);
+</span></span><span class=line><span class=cl>                    Collections.reverse(wrapperClassesList);
+</span></span><span class=line><span class=cl>                }
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                if (CollectionUtils.isNotEmpty(wrapperClassesList)) {
+</span></span><span class=line><span class=cl>                    for (Class&lt;?&gt; wrapperClass : wrapperClassesList) {
+</span></span><span class=line><span class=cl>                        Wrapper wrapper = wrapperClass.getAnnotation(Wrapper.class);
+</span></span><span class=line><span class=cl>                        boolean match = (wrapper == null) || ((ArrayUtils.isEmpty(
+</span></span><span class=line><span class=cl>                            wrapper.matches()) || ArrayUtils.contains(wrapper.matches(),
+</span></span><span class=line><span class=cl>                            name)) &amp;&amp; !ArrayUtils.contains(wrapper.mismatches(), name));
+</span></span><span class=line><span class=cl>                        if (match) {
+</span></span><span class=line><span class=cl>                            instance = injectExtension(
+</span></span><span class=line><span class=cl>                                (T) wrapperClass.getConstructor(type).newInstance(instance));
+</span></span><span class=line><span class=cl>                            instance = postProcessAfterInitialization(instance, name);
+</span></span><span class=line><span class=cl>                        }
+</span></span><span class=line><span class=cl>                    }
+</span></span><span class=line><span class=cl>                }
+</span></span><span class=line><span class=cl>            }
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            // Warning: After an instance of Lifecycle is wrapped by cachedWrapperClasses, it may not still be Lifecycle instance, this application may not invoke the lifecycle.initialize hook.
+</span></span><span class=line><span class=cl>            initExtension(instance);
+</span></span><span class=line><span class=cl>            return instance;
+</span></span><span class=line><span class=cl>        } catch (Throwable t) {
+</span></span><span class=line><span class=cl>            throw new IllegalStateException(
+</span></span><span class=line><span class=cl>                &#34;Extension instance (name: &#34; + name + &#34;, class: &#34; + type + &#34;) couldn&#39;t be instantiated: &#34; + t.getMessage(),
+</span></span><span class=line><span class=cl>                t);
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>    }
+</span></span></code></pre></td></tr></table></div></div><p>重点看if(wrap)这里，如果需要包装的话，会获取到对应的包装类的class列表，如果有对应的包装类class，则判断是否可以根据构造器创建对应类型的实例。</p><p>这一段代码会生成包装类，并将target设置进成员变量里</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>if (match) {
+</span></span><span class=line><span class=cl>     instance = injectExtension(
+</span></span><span class=line><span class=cl>                                (T) wrapperClass.getConstructor(type).newInstance(instance)
+</span></span><span class=line><span class=cl>                               );
+</span></span><span class=line><span class=cl>     nstance = postProcessAfterInitialization(instance, name);
+</span></span><span class=line><span class=cl>}
+</span></span></code></pre></td></tr></table></div></div><p>来看一下debug过程，以tortoise为例，断点断在tortoise实例上</p><p>![image-20230805095043419](/Users/since/Library/Application Support/typora-user-images/image-20230805095043419.png)</p><p>可以看到tortoise实例的类型的RabbitWrapperExt，持有了一个TortoiseWrapperExt类型的成员变量，而TortoiseWrapperExt最终持有了我们的目标TortoiseExt类型的成员变量.</p><h3 id=ioc>IOC</h3><p>dubbo的spi实现了ioc的功能，具体来说如果有个成员变量里实现了set方法，就会尝试为这个成员变量注入一个bean，以达到自动注入的目的。</p><p>本次没有提供spring环境，所以使用adaptiveExtension获取实例进行注入</p><h4 id=物料-3>物料</h4><p>配置文件，在META-INF/dubbo/下新增一个配置文件<code>com.fc.rpc.dubbo.IocExt</code>,文件内容如下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>audi=com.fc.rpc.dubbo.AudiIocExt
+</span></span></code></pre></td></tr></table></div></div><p>以及之前测试用过的spi配额<code>com.fc.rpc.dubbo.SimpleExt</code>，拿过来用一下</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>dog=com.fc.rpc.dubbo.DogExt
+</span></span><span class=line><span class=cl>cat=com.fc.rpc.dubbo.CatExt
+</span></span></code></pre></td></tr></table></div></div><p>SPI接口类</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>extension</span><span class=p>.</span><span class=nx>SPI</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * ioc ext
+</span></span></span><span class=line><span class=cl><span class=cm> *
+</span></span></span><span class=line><span class=cl><span class=cm> * @author since
+</span></span></span><span class=line><span class=cl><span class=cm> * @date 2023-08-05 10:52
+</span></span></span><span class=line><span class=cl><span class=cm> **/</span>
+</span></span><span class=line><span class=cl><span class=err>@</span><span class=nx>SPI</span>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=kd>interface</span> <span class=nx>IocExt</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm>     * 汽车的价格
+</span></span></span><span class=line><span class=cl><span class=cm>     */</span>
+</span></span><span class=line><span class=cl>    <span class=nx>void</span> <span class=nf>carPrice</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>SPI接口实现类</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>URL</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>url</span><span class=p>.</span><span class=nx>component</span><span class=p>.</span><span class=nx>URLAddress</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>url</span><span class=p>.</span><span class=nx>component</span><span class=p>.</span><span class=nx>URLParam</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>java</span><span class=p>.</span><span class=nx>util</span><span class=p>.</span><span class=nx>HashMap</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * audi ioc ext
+</span></span></span><span class=line><span class=cl><span class=cm> *
+</span></span></span><span class=line><span class=cl><span class=cm> * @author since
+</span></span></span><span class=line><span class=cl><span class=cm> * @date 2023-08-05 10:53
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>AudiIocExt</span> <span class=nx>implements</span> <span class=nx>IocExt</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>private</span> <span class=nx>SimpleExt</span> <span class=nx>simpleExt</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>void</span> <span class=nf>setSimpleExt</span><span class=p>(</span><span class=nx>SimpleExt</span> <span class=nx>simpleExt</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>this</span><span class=p>.</span><span class=nx>simpleExt</span> <span class=p>=</span> <span class=nx>simpleExt</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=err>@</span><span class=nx>Override</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>void</span> <span class=nf>carPrice</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>System</span><span class=p>.</span><span class=nx>out</span><span class=p>.</span><span class=nb>println</span><span class=p>(</span><span class=s>&#34;audi&#39;s price is 299999&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>URLAddress</span> <span class=nx>urlAddress</span> <span class=p>=</span> <span class=nx>new</span> <span class=nf>URLAddress</span><span class=p>(</span><span class=s>&#34;127.0.0.1&#34;</span><span class=p>,</span> <span class=mi>20880</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>URLParam</span> <span class=nx>parse</span> <span class=p>=</span> <span class=nx>URLParam</span><span class=p>.</span><span class=nf>parse</span><span class=p>(</span><span class=nx>new</span> <span class=nx>HashMap</span><span class=p>&lt;&gt;());</span>
+</span></span><span class=line><span class=cl>        <span class=nx>String</span> <span class=nx>audi</span> <span class=p>=</span> <span class=nx>simpleExt</span><span class=p>.</span><span class=nf>echo</span><span class=p>(</span><span class=nx>new</span> <span class=nf>URL</span><span class=p>(</span><span class=nx>urlAddress</span><span class=p>,</span> <span class=nx>parse</span><span class=p>),</span> <span class=s>&#34;audi&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>System</span><span class=p>.</span><span class=nx>out</span><span class=p>.</span><span class=nb>println</span><span class=p>(</span><span class=s>&#34;ioc execute: &#34;</span> <span class=o>+</span> <span class=nx>audi</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>SPI实现里定义了一个成员变量SimpleExt，这个是我们本篇文章第一个测试类</p><p>一个测试类</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-go data-lang=go><span class=line><span class=cl><span class=kn>package</span> <span class=nx>com</span><span class=p>.</span><span class=nx>fc</span><span class=p>.</span><span class=nx>rpc</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nx>org</span><span class=p>.</span><span class=nx>apache</span><span class=p>.</span><span class=nx>dubbo</span><span class=p>.</span><span class=nx>common</span><span class=p>.</span><span class=nx>extension</span><span class=p>.</span><span class=nx>ExtensionLoader</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=cm>/**
+</span></span></span><span class=line><span class=cl><span class=cm> * @author
+</span></span></span><span class=line><span class=cl><span class=cm> * @date 2023-08-05 10:58
+</span></span></span><span class=line><span class=cl><span class=cm> */</span>
+</span></span><span class=line><span class=cl><span class=nx>public</span> <span class=nx>class</span> <span class=nx>SpiIoc</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=nx>public</span> <span class=nx>static</span> <span class=nx>void</span> <span class=nf>main</span><span class=p>(</span><span class=nx>String</span><span class=p>[]</span> <span class=nx>args</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=nx>ExtensionLoader</span><span class=p>&lt;</span><span class=nx>IocExt</span><span class=p>&gt;</span> <span class=nx>extensionLoader</span> <span class=p>=</span> <span class=nx>ExtensionLoader</span><span class=p>.</span><span class=nf>getExtensionLoader</span><span class=p>(</span><span class=nx>IocExt</span><span class=p>.</span><span class=nx>class</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>IocExt</span> <span class=nx>audi</span> <span class=p>=</span> <span class=nx>extensionLoader</span><span class=p>.</span><span class=nf>getExtension</span><span class=p>(</span><span class=s>&#34;audi&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=nx>audi</span><span class=p>.</span><span class=nf>carPrice</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h4 id=测试-1>测试</h4><p>看下执行结果,可以看到确实执行到了成员变量的方法，成员变量确实注入了一个实例</p><p>![image-20230808225444873](/Users/since/Library/Application Support/typora-user-images/image-20230808225444873.png)</p><p>看下debug过程,simpleExt的类型是动态代理生成的一个类的实例，这个之前分析自适应扩展的时候件过，最终会执行到SimpleExt默认的spi实现那。</p><p>![image-20230808225724407](/Users/since/Library/Application Support/typora-user-images/image-20230808225724407.png)</p><h4 id=代码实现-1>代码实现</h4><p>实现这个主要是在获取扩展时，做了一个依赖注入的功能，一共有3种类型的injector，本次测试用例用的是AdaptiveExtensionInjector</p><p>看下具体的代码</p><p><code>org.apache.dubbo.common.extension.ExtensionLoader#createExtension</code>这里是创建扩展入口</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl> private T createExtension(String name, boolean wrap) {
+</span></span><span class=line><span class=cl>        Class&lt;?&gt; clazz = getExtensionClasses().get(name);
+</span></span><span class=line><span class=cl>        if (clazz == null || unacceptableExceptions.contains(name)) {
+</span></span><span class=line><span class=cl>            throw findException(name);
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>        try {
+</span></span><span class=line><span class=cl>            T instance = (T) extensionInstances.get(clazz);
+</span></span><span class=line><span class=cl>            if (instance == null) {
+</span></span><span class=line><span class=cl>                extensionInstances.putIfAbsent(clazz, createExtensionInstance(clazz));
+</span></span><span class=line><span class=cl>                instance = (T) extensionInstances.get(clazz);
+</span></span><span class=line><span class=cl>                instance = postProcessBeforeInitialization(instance, name);
+</span></span><span class=line><span class=cl>                //主要看这里
+</span></span><span class=line><span class=cl>                injectExtension(instance);
+</span></span><span class=line><span class=cl>                instance = postProcessAfterInitialization(instance, name);
+</span></span><span class=line><span class=cl>            }
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            if (wrap) {
+</span></span><span class=line><span class=cl>                List&lt;Class&lt;?&gt;&gt; wrapperClassesList = new ArrayList&lt;&gt;();
+</span></span><span class=line><span class=cl>                if (cachedWrapperClasses != null) {
+</span></span><span class=line><span class=cl>                    wrapperClassesList.addAll(cachedWrapperClasses);
+</span></span><span class=line><span class=cl>                    wrapperClassesList.sort(WrapperComparator.COMPARATOR);
+</span></span><span class=line><span class=cl>                    Collections.reverse(wrapperClassesList);
+</span></span><span class=line><span class=cl>                }
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                if (CollectionUtils.isNotEmpty(wrapperClassesList)) {
+</span></span><span class=line><span class=cl>                    for (Class&lt;?&gt; wrapperClass : wrapperClassesList) {
+</span></span><span class=line><span class=cl>                        Wrapper wrapper = wrapperClass.getAnnotation(Wrapper.class);
+</span></span><span class=line><span class=cl>                        boolean match = (wrapper == null) || ((ArrayUtils.isEmpty(
+</span></span><span class=line><span class=cl>                            wrapper.matches()) || ArrayUtils.contains(wrapper.matches(),
+</span></span><span class=line><span class=cl>                            name)) &amp;&amp; !ArrayUtils.contains(wrapper.mismatches(), name));
+</span></span><span class=line><span class=cl>                        if (match) {
+</span></span><span class=line><span class=cl>                            instance = injectExtension(
+</span></span><span class=line><span class=cl>                                (T) wrapperClass.getConstructor(type).newInstance(instance));
+</span></span><span class=line><span class=cl>                            instance = postProcessAfterInitialization(instance, name);
+</span></span><span class=line><span class=cl>                        }
+</span></span><span class=line><span class=cl>                    }
+</span></span><span class=line><span class=cl>                }
+</span></span><span class=line><span class=cl>            }
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            // Warning: After an instance of Lifecycle is wrapped by cachedWrapperClasses, it may not still be Lifecycle instance, this application may not invoke the lifecycle.initialize hook.
+</span></span><span class=line><span class=cl>            initExtension(instance);
+</span></span><span class=line><span class=cl>            return instance;
+</span></span><span class=line><span class=cl>        } catch (Throwable t) {
+</span></span><span class=line><span class=cl>            throw new IllegalStateException(
+</span></span><span class=line><span class=cl>                &#34;Extension instance (name: &#34; + name + &#34;, class: &#34; + type + &#34;) couldn&#39;t be instantiated: &#34; + t.getMessage(),
+</span></span><span class=line><span class=cl>                t);
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>    }
+</span></span></code></pre></td></tr></table></div></div><p><code>org.apache.dubbo.common.extension.ExtensionLoader#injectExtension</code>这里是依赖注入实现,使用<code>org.apache.dubbo.common.extension.ExtensionInjector#getInstance</code>获取需要注入的实例</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>private T injectExtension(T instance) {
+</span></span><span class=line><span class=cl>        if (injector == null) {
+</span></span><span class=line><span class=cl>            return instance;
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        try {
+</span></span><span class=line><span class=cl>            for (Method method : instance.getClass().getMethods()) {
+</span></span><span class=line><span class=cl>                if (!isSetter(method)) {
+</span></span><span class=line><span class=cl>                    continue;
+</span></span><span class=line><span class=cl>                }
+</span></span><span class=line><span class=cl>                /**
+</span></span><span class=line><span class=cl>                 * Check {@link DisableInject} to see if we need auto-injection for this property
+</span></span><span class=line><span class=cl>                 */
+</span></span><span class=line><span class=cl>                if (method.isAnnotationPresent(DisableInject.class)) {
+</span></span><span class=line><span class=cl>                    continue;
+</span></span><span class=line><span class=cl>                }
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                // When spiXXX implements ScopeModelAware, ExtensionAccessorAware,
+</span></span><span class=line><span class=cl>                // the setXXX of ScopeModelAware and ExtensionAccessorAware does not need to be injected
+</span></span><span class=line><span class=cl>                if (method.getDeclaringClass() == ScopeModelAware.class) {
+</span></span><span class=line><span class=cl>                    continue;
+</span></span><span class=line><span class=cl>                }
+</span></span><span class=line><span class=cl>                if (instance instanceof ScopeModelAware || instance instanceof ExtensionAccessorAware) {
+</span></span><span class=line><span class=cl>                    if (ignoredInjectMethodsDesc.contains(ReflectUtils.getDesc(method))) {
+</span></span><span class=line><span class=cl>                        continue;
+</span></span><span class=line><span class=cl>                    }
+</span></span><span class=line><span class=cl>                }
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                Class&lt;?&gt; pt = method.getParameterTypes()[0];
+</span></span><span class=line><span class=cl>                if (ReflectUtils.isPrimitives(pt)) {
+</span></span><span class=line><span class=cl>                    continue;
+</span></span><span class=line><span class=cl>                }
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                try {
+</span></span><span class=line><span class=cl>                    String property = getSetterProperty(method);
+</span></span><span class=line><span class=cl>                    //主要看这里
+</span></span><span class=line><span class=cl>                    Object object = injector.getInstance(pt, property);
+</span></span><span class=line><span class=cl>                    if (object != null) {
+</span></span><span class=line><span class=cl>                        method.invoke(instance, object);
+</span></span><span class=line><span class=cl>                    }
+</span></span><span class=line><span class=cl>                } catch (Exception e) {
+</span></span><span class=line><span class=cl>                    logger.error(COMMON_ERROR_LOAD_EXTENSION, &#34;&#34;, &#34;&#34;,
+</span></span><span class=line><span class=cl>                        &#34;Failed to inject via method &#34; + method.getName() + &#34; of interface &#34; + type.getName() + &#34;: &#34; + e.getMessage(),
+</span></span><span class=line><span class=cl>                        e);
+</span></span><span class=line><span class=cl>                }
+</span></span><span class=line><span class=cl>            }
+</span></span><span class=line><span class=cl>        } catch (Exception e) {
+</span></span><span class=line><span class=cl>            logger.error(COMMON_ERROR_LOAD_EXTENSION, &#34;&#34;, &#34;&#34;, e.getMessage(), e);
+</span></span><span class=line><span class=cl>        }
+</span></span><span class=line><span class=cl>        return instance;
+</span></span><span class=line><span class=cl>    }
+</span></span></code></pre></td></tr></table></div></div><p>使用反射调用set方法将获取到实例设置到对象的成员变量里</p><p>看下debug过程，<code>org.apache.dubbo.common.extension.ExtensionLoader#injectExtension</code>执行到获取instance时，injector类型是AdaptiveExtensionInjector,持有一个injector list，会遍历list获取实例</p><p>![image-20230808230814980](/Users/since/Library/Application Support/typora-user-images/image-20230808230814980.png)</p><p>遍历3种类型的injector获取要注入的实例，找到一个就返回</p><p>![image-20230808231002006](/Users/since/Library/Application Support/typora-user-images/image-20230808231002006.png)</p><h2 id=其他>其他</h2><p>断断续续终于写完了，第一次写这种分析源码的文章，7月12号动笔的，8月12号才写完，真的墨迹。</p><p>中间也看了其他博客的文章，自己也动手Debug了代码，对dubbo的spi有了比较深入的了解了，也算学到了不少知识。</p><p>之前一阵子对dubbo的源码比较好奇，陆续看了dubbo consumer的超时重试策略，spi设计等模块，后续如果有机会的话会陆续写出来。</p><h2 id=参考链接>参考链接</h2><ul><li><p><a href=https://cn.dubbo.apache.org/zh-cn/overview/mannual/java-sdk/reference-manual/spi/description/dubbo-spi/#1-dubbo-spi-%E6%89%A9%E5%B1%95%E7%AE%80%E4%BB%8B>dubbo spi官网介绍</a></p></li><li><p><a href=https://segmentfault.com/a/1190000040208433>vivo互联网技术dubbo spi介绍</a></p></li></ul></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
+<span class=item-content>since</span></p><p class=copyright-item><span class=item-title>上次更新</span>
+<span class=item-content>2023-07-12</span></p></div><footer class=post-footer><div class=post-tags><a href=/tags/dubbo/>dubbo</a>
+<a href=/tags/spi/>spi</a></div><nav class=post-nav><a class=next href=/post/generate-yml-based-on-template/><span class="next-text nav-default">基于模板文件生成yml</span>
+<span class="next-text nav-mobile">下一篇</span>
+<i class="iconfont icon-right"></i></a></nav></footer></article></div><script src=https://utteranc.es/client.js repo=thend03/blog-comments issue-term=pathname theme=github-light crossorigin=anonymous async></script><noscript>Please enable JavaScript to view the <a href=https://github.com/utterance>comments powered by utterances.</a></noscript></div></main><footer id=footer class=footer><div class=social-links><a href=whenevertobefc@outlook.com class="iconfont icon-email" title=email></a>
+<a href=https://stackoverflow.com/ class="iconfont icon-stack-overflow" title=stack-overflow></a>
+<a href=https://twitter.com/TobeWhenever class="iconfont icon-twitter" title=twitter></a>
+<a href=https://facebook.com class="iconfont icon-facebook" title=facebook></a>
+<a href=https://www.linkedin.com/in/ccc-f-03127a280/ class="iconfont icon-linkedin" title=linkedin></a>
+<a href=https://google.com.hk class="iconfont icon-google" title=google></a>
+<a href=https://github.com/thend03/ class="iconfont icon-github" title=github></a>
+<a href=https://weibo.com/u/2997714233 class="iconfont icon-weibo" title=weibo></a>
+<a href=https://www.zhihu.com/people/sssddr-28 class="iconfont icon-zhihu" title=zhihu></a>
+<a href="https://www.douban.com/people/168584175/?_i=72721742lW80TP" class="iconfont icon-douban" title=douban></a>
+<a href=http://localhost:1313 class="iconfont icon-pocket" title=pocket></a>
+<a href=http://localhost:1313 class="iconfont icon-tumblr" title=tumblr></a>
+<a href=http://localhost:1313 class="iconfont icon-instagram" title=instagram></a>
+<a href=http://localhost:1313 class="iconfont icon-gitlab" title=gitlab></a>
+<a href=http://localhost:1313 class="iconfont icon-bilibili" title=bilibili></a>
+<a href=https://blog.thend03.com/index.xml type=application/rss+xml class="iconfont icon-rss" title=rss></a></div><div class=copyright><span class=power-by>由 <a class=hexo-link href=https://gohugo.io>Hugo</a> 强力驱动</span>
+<span class=division>|</span>
+<span class=theme-info>主题 -
+<a class=theme-link href=https://github.com/olOwOlo/hugo-theme-even>Even</a></span>
+<span class=copyright-year>&copy;
+2017 -
+2023<span class=heart><i class="iconfont icon-heart"></i></span><span>since</span></span></div></footer><div class=back-to-top id=back-to-top><i class="iconfont icon-up"></i></div></div><script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script>
+<script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script>
+<script type=text/javascript src=/js/main.min.4ae89da218555efa0e7093a20b92017d2e1202b66fff9fc2edf4cb8d44b44c6e.js></script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GZVCWD04LL"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-GZVCWD04LL")</script></body></html>
