@@ -55,7 +55,9 @@ java进程的JVM参数如下,堆内存2g，其中老年代1g，新生代1g
 
 ![image-20230914172320532](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202309141723560.png)
 
-	### histogram
+
+
+### histogram
 
 直方图以类为维度，展示了类有多少个实例，shallow heap和retained heap的内存大小
 
@@ -93,4 +95,4 @@ Data too long for column 'name' at row 1
 
 本次的oom原因比较直观，基本上看下overview,histogram,dominator tree就可以得出结论了
 
-修复也好改，把update问题修复好了
+修复也比较简单，要么限制下入库时name字段的长度，要么将name字段的长度调大一点就好了
