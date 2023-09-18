@@ -22,7 +22,10 @@
 </span></span></code></pre></td></tr></table></div></div><p>堆栈信息如下，其他的线程也是类似，那可以得到如下结论：mq消费的时候，由于mybatis执行更新发生异常，cat的context持有了异常信息，异常过多导致了oom</p><p><img src=https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202309150923502.png alt=image-20230915092353441></p><h2 id=小节>小节</h2><p>本次的oom原因比较直观，基本上看下overview,histogram,dominator tree就可以得出结论了</p><p>修复也比较简单，要么限制下入库时name字段的长度，要么将name字段的长度调大一点就好了</p></div><div class=post-copyright><p class=copyright-item><span class=item-title>文章作者</span>
 <span class=item-content>since</span></p><p class=copyright-item><span class=item-title>上次更新</span>
 <span class=item-content>2023-09-14</span></p></div><footer class=post-footer><div class=post-tags><a href=/tags/oom/>oom</a>
-<a href=/tags/heap/>heap</a></div><nav class=post-nav><a class=next href=/post/metaspace-oom/><span class="next-text nav-default">metaspace-oom</span>
+<a href=/tags/heap/>heap</a></div><nav class=post-nav><a class=prev href=/post/buy-a-xp-car/><i class="iconfont icon-left"></i>
+<span class="prev-text nav-default">买车日记</span>
+<span class="prev-text nav-mobile">上一篇</span></a>
+<a class=next href=/post/metaspace-oom/><span class="next-text nav-default">metaspace-oom</span>
 <span class="next-text nav-mobile">下一篇</span>
 <i class="iconfont icon-right"></i></a></nav></footer></article></div><script src=https://utteranc.es/client.js repo=thend03/blog-comments issue-term=pathname theme=github-light crossorigin=anonymous async></script><noscript>Please enable JavaScript to view the <a href=https://github.com/utterance>comments powered by utterances.</a></noscript></div></main><footer id=footer class=footer><div class=social-links><a href=whenevertobefc@outlook.com class="iconfont icon-email" title=email></a>
 <a href=https://stackoverflow.com/ class="iconfont icon-stack-overflow" title=stack-overflow></a>
