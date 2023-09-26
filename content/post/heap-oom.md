@@ -10,7 +10,7 @@ description: "heap oom"
 
 ## 问题
 
-测试环境的某台机器运行一段时间后发生了oom，类型是heap oom,即堆内存溢出，用不了了，然后由于配置了`-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/logs/`，在发生oom后，会自动生成dump文件，所以可以拿着dump进行分析，进程先重启能用。
+测试环境的某台机器运行一段时间后发生了oom，类型是heap oom,即堆内存溢出，用不了了，然后由于配置了`-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/logs/`，在发生oom后，会自动生成dump文件，所以可以拿着dump进行分析，进程先重启恢复使用。
 
 
 
@@ -91,7 +91,7 @@ Data too long for column 'name' at row 1
 
 ![image-20230915092353441](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202309150923502.png)
 
-## 小节
+## 小结
 
 本次的oom原因比较直观，基本上看下overview,histogram,dominator tree就可以得出结论了
 
