@@ -27,7 +27,7 @@ JDK提供的SPI,有一个亿点点的小缺点，就是每次都要遍历所有�
 
 一个简单的接口
 
-```
+```java
 package com.fc.se.spi;
 
 public interface Animal {
@@ -38,7 +38,7 @@ public interface Animal {
 
 2个接口的实现类
 
-```
+```java
 package com.fc.se.spi;
 
 public class Cat implements Animal {
@@ -51,7 +51,7 @@ public class Cat implements Animal {
 
 
 
-```
+```java
 package com.fc.se.spi;
 
 public class Dog implements Comparable<Dog>{
@@ -97,17 +97,17 @@ Resources下的spi配置文件
 
 文件名为接口全限定名com.fc.se.spi.Animal，文件内容为所有的实现类的接口全限定名
 
-```
+```java
 com.fc.se.spi.Cat
 ```
 
-![image-20230712233205259](/Users/since/Library/Application Support/typora-user-images/image-20230712233205259.png)
+![image-20230712233205259](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101352755.png)
 
 ### 测试过程
 
 首先执行下main方法
 
-![image-20230712233855450](/Users/since/Library/Application Support/typora-user-images/image-20230712233855450.png)
+![image-20230712233855450](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101351741.png)
 
 根据输出结果可以看到，每次调用ServiceLoader#load方法每次得到的都是新的实例，而且没有任何根据指定字段获取指定实例的方法。如果有的实例在实例化的时候存在比较耗时的操作，或者spi的实现非常多，会非常的消耗资源。
 
@@ -130,7 +130,7 @@ dubbo兼容了jdk spi的目录，并扩展了自身的spi目录，其中internal
 
 添加dubbo依赖，我测试用的是dubbo-3.2.0-beta4，spi机制基本上一样，看的时候对应下自己的版本，可能会有差异。
 
-```
+```java
  <dependency>
      <groupId>org.apache.dubbo</groupId>
      <artifactId>dubbo</artifactId>
@@ -140,7 +140,7 @@ dubbo兼容了jdk spi的目录，并扩展了自身的spi目录，其中internal
 
 一个添加了@SPI注解的接口，指定了默认的spi实现,有几个方法添加了@Adaptive注解，用于测试自适应扩展点。
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 import org.apache.dubbo.common.URL;
@@ -182,7 +182,7 @@ public interface SimpleExt {
 
 2个实现了接口的普普通通实现类
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 import org.apache.dubbo.common.URL;
@@ -204,7 +204,7 @@ public class CatExt implements SimpleExt {
 }
 ```
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 import org.apache.dubbo.common.URL;
@@ -229,7 +229,7 @@ public class DogExt implements SimpleExt {
 
 一个普通的测试类
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 import org.apache.dubbo.common.URL;
@@ -256,14 +256,14 @@ public class DubboSpi {
 
 resources下在META-INF/dubbo下的spi配置文件，文件名为接口的全限定名com.fc.rpc.dubbo.SimpleExt，文件内容是kv配置，指定哪个key对应哪个实现类
 
-```
+```java
 dog=com.fc.rpc.dubbo.DogExt
 cat=com.fc.rpc.dubbo.CatExt
 ```
 
 
 
-![image-20230714164535594](/Users/since/Library/Application Support/typora-user-images/image-20230714164535594.png)
+![image-20230714164535594](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101351450.png)
 
 基本的准备工作做好了，下面先根据DubboSpi的main方法做一下测试
 
@@ -271,7 +271,7 @@ cat=com.fc.rpc.dubbo.CatExt
 
 每一个接口类对应唯一一个ExtensionLoader实例
 
-```
+```java
 public static void main(String[] args) {
         ExtensionLoader<SimpleExt> extensionLoader = ExtensionLoader.getExtensionLoader(SimpleExt.class);
         ExtensionLoader<SimpleExt> extensionLoader1 = ExtensionLoader.getExtensionLoader(SimpleExt.class);
@@ -287,7 +287,7 @@ public static void main(String[] args) {
 1208203046
 ```
 
-![image-20230714153000173](/Users/since/Library/Application Support/typora-user-images/image-20230714153000173.png)
+![image-20230714153000173](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101351372.png)
 
 根据debug和控制台输出，可以看出多次获取的是同一个extensinonLoader实例
 
@@ -316,7 +316,7 @@ cat=com.fc.rpc.dubbo.CatExt
 
 接下来试验下这3个方法
 
-```
+```java
 public static void main(String[] args) {
         ExtensionLoader<SimpleExt> extensionLoader = ExtensionLoader.getExtensionLoader(SimpleExt.class);
 
@@ -327,7 +327,7 @@ public static void main(String[] args) {
 }
 ```
 
-![image-20230714164705658](/Users/since/Library/Application Support/typora-user-images/image-20230714164705658.png)
+![image-20230714164705658](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101351921.png)
 
 根据结果可以看到defaultExtension/dog/dog2都是同一个实例，类型为com.fc.rpc.dubbo.DogExt
 
@@ -347,7 +347,7 @@ public static void main(String[] args) {
 
 看下示例
 
-```
+```java
 import org.apache.dubbo.common.URL;
 import org.apache.dubbo.common.extension.Adaptive;
 import org.apache.dubbo.common.extension.SPI;
@@ -398,7 +398,7 @@ public interface SimpleExt {
 
 看下示例代码
 
-```
+```java
  public static void main(String[] args) {
         ExtensionLoader<SimpleExt> extensionLoader = ExtensionLoader.getExtensionLoader(SimpleExt.class);
 
@@ -412,19 +412,19 @@ public interface SimpleExt {
 }
 ```
 
-![image-20230714172924754](/Users/since/Library/Application Support/typora-user-images/image-20230714172924754.png)
+![image-20230714172924754](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101351124.png)
 
 echo方法使用的是默认的参数，所以会执行到spi的默认扩展dog，可以看一下下一步
 
-![image-20230714173117260](/Users/since/Library/Application Support/typora-user-images/image-20230714173117260.png)
+![image-20230714173117260](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101351332.png)
 
 在来看一下SimpleExt$Adaptive的class文件，这个是通过javaassist直接拼接出来的class文件，控制台会输出这个class文件
 
-![image-20230714173302139](/Users/since/Library/Application Support/typora-user-images/image-20230714173302139.png)
+![image-20230714173302139](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101351832.png)
 
 完整的class文件如下
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 import org.apache.dubbo.rpc.model.ScopeModel;
@@ -511,7 +511,7 @@ SPI接口类
 
 定义了一个WrapperExt接口，打上@SPI注解，这个和上面的SimpleExt一样
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 import org.apache.dubbo.common.extension.SPI;
@@ -537,7 +537,7 @@ public interface WrapperExt {
 
 有2个原始实现类，实现了WrapperExt,这2个和上面的DogExt和CatExt含义一样
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 /**
@@ -552,7 +552,7 @@ public class TortoiseExt implements WrapperExt {
 }
 ```
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 /**
@@ -569,7 +569,7 @@ public class RabbitExt implements WrapperExt {
 
 有2个包装实现类，这个和原始实现类不同的是里面有个类型为WrapperExt的成员变量，有一个含参构造函数，用于初始化成员变量
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 /**
@@ -591,7 +591,7 @@ public class TortoiseWrapperExt implements WrapperExt {
 }
 ```
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 /**
@@ -616,7 +616,7 @@ public class RabbitWrapperExt implements WrapperExt {
 
 一个测试类，用于执行测试方法
 
-```
+```java
 	package com.fc.rpc.dubbo;
 
 import org.apache.dubbo.common.extension.ExtensionLoader;
@@ -665,7 +665,7 @@ rabbit self: give up
 
 通过org.apache.dubbo.common.extension.ExtensionLoader#getExtension(java.lang.String)进行调用，wrapper默认是true，所以获取到的构造参数都是会进行包装判断的，具体看下面的代码
 
-```
+```java
     private T createExtension(String name, boolean wrap) {
         Class<?> clazz = getExtensionClasses().get(name);
         if (clazz == null || unacceptableExceptions.contains(name)) {
@@ -720,7 +720,7 @@ rabbit self: give up
 
 这一段代码会生成包装类，并将target设置进成员变量里
 
-```
+```java
 if (match) {
      instance = injectExtension(
                                 (T) wrapperClass.getConstructor(type).newInstance(instance)
@@ -733,7 +733,7 @@ if (match) {
 
 来看一下debug过程，以tortoise为例，断点断在tortoise实例上
 
-![image-20230805095043419](/Users/since/Library/Application Support/typora-user-images/image-20230805095043419.png)
+![image-20230805095043419](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101350251.png)
 
 可以看到tortoise实例的类型的RabbitWrapperExt，持有了一个TortoiseWrapperExt类型的成员变量，而TortoiseWrapperExt最终持有了我们的目标TortoiseExt类型的成员变量.
 
@@ -764,7 +764,7 @@ cat=com.fc.rpc.dubbo.CatExt
 
 SPI接口类
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 import org.apache.dubbo.common.extension.SPI;
@@ -786,7 +786,7 @@ public interface IocExt {
 
 SPI接口实现类
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 import org.apache.dubbo.common.URL;
@@ -823,7 +823,7 @@ SPI实现里定义了一个成员变量SimpleExt，这个是我们本篇文章�
 
 一个测试类
 
-```
+```java
 package com.fc.rpc.dubbo;
 
 import org.apache.dubbo.common.extension.ExtensionLoader;
@@ -845,11 +845,11 @@ public class SpiIoc {
 
 看下执行结果,可以看到确实执行到了成员变量的方法，成员变量确实注入了一个实例
 
-![image-20230808225444873](/Users/since/Library/Application Support/typora-user-images/image-20230808225444873.png)
+![image-20230808225444873](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101350254.png)
 
 看下debug过程,simpleExt的类型是动态代理生成的一个类的实例，这个之前分析自适应扩展的时候件过，最终会执行到SimpleExt默认的spi实现那。
 
-![image-20230808225724407](/Users/since/Library/Application Support/typora-user-images/image-20230808225724407.png)
+![image-20230808225724407](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101350550.png)
 
 #### 代码实现
 
@@ -859,7 +859,7 @@ public class SpiIoc {
 
 `org.apache.dubbo.common.extension.ExtensionLoader#createExtension`这里是创建扩展入口
 
-```
+```java
  private T createExtension(String name, boolean wrap) {
         Class<?> clazz = getExtensionClasses().get(name);
         if (clazz == null || unacceptableExceptions.contains(name)) {
@@ -912,7 +912,7 @@ public class SpiIoc {
 
 `org.apache.dubbo.common.extension.ExtensionLoader#injectExtension`这里是依赖注入实现,使用`org.apache.dubbo.common.extension.ExtensionInjector#getInstance`获取需要注入的实例
 
-```
+```java
 private T injectExtension(T instance) {
         if (injector == null) {
             return instance;
@@ -970,13 +970,13 @@ private T injectExtension(T instance) {
 
 看下debug过程，`org.apache.dubbo.common.extension.ExtensionLoader#injectExtension`执行到获取instance时，injector类型是AdaptiveExtensionInjector,持有一个injector list，会遍历list获取实例
 
-![image-20230808230814980](/Users/since/Library/Application Support/typora-user-images/image-20230808230814980.png)
+![image-20230808230814980](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101350398.png)
 
 
 
 遍历3种类型的injector获取要注入的实例，找到一个就返回
 
-![image-20230808231002006](/Users/since/Library/Application Support/typora-user-images/image-20230808231002006.png)
+![image-20230808231002006](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202310101350803.png)
 
 
 
