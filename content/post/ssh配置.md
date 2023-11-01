@@ -458,7 +458,7 @@ root@racknerd-7c9c56:~#
 
 
 
-上面介绍的是命令行使用ssh连接的方式，如果有条件的话，可以使用其他的ssh客户端，比如xshell、putty、secureCRT、mobaXterm等工具，这些工具带了界面，可以在界面上进行操作，并带了秘钥文件管理，和存储密码的功能
+上面介绍的是命令行使用ssh连接的方式，如果有条件的话，可以使用其他的ssh客户端，比如xshell、putty、secureCRT、mobaXterm等工具，这些工具带了界面，可以在界面上进行操作，并且有秘钥文件管理和存储密码的功能
 
 
 
