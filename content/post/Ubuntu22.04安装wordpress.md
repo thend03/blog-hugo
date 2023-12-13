@@ -2,7 +2,7 @@
 draft: false
 date: 2023-12-12T08:43:49+08:00
 title: "Ubuntu22.04安装wordpress"
-slug: "install-wordpress-on-ubuntu22222.04" 
+slug: "install-wordpress-on-ubuntu22.04" 
 tags: ["wordpress"]
 authors: ["since"]
 description: "如何在ubuntu22.04上安装wordpress"
@@ -32,7 +32,11 @@ description: "如何在ubuntu22.04上安装wordpress"
 
 件最新版需要php8.1以上，然后安装这个插件之后各种连接超时，权限问题，我是真的被折磨的有点惨。
 
-通过Nginx访问wp-admin/install.php，报错connection timeout，各种搜索解决不了，嘿，果然安装还是按照文档来，切忌一上来就想
+通过Nginx访问wp-admin/install.php，报错connection timeout，各种搜索解决不了。后来灵机一动，把pg4wp插件挪走，php版本从
+
+8.2降到7.4就好了。。。。
+
+嘿，果然安装还是按照文档来，切忌一上来就想
 
 法比较多，使用其他最新的组件，比如pg
 
@@ -41,6 +45,18 @@ description: "如何在ubuntu22.04上安装wordpress"
 wordpress有一个经典的五步安装法，但是缺少了一些关键的描述，比如如何访问install.php，文档介绍是使用web服务器，但具体怎么
 
 做没有详细介绍，导致我进去就掉坑里了。还有一些其他的细节没有补充。
+
+而且基本是英文文档，看下来略微有点吃力。 
+
+
+
+### 文件权限问题
+
+由于是使用root用户登录的，所以我第一次安装目录是/root/wordpress，nginx访问报文件权限问题，挪到非root目录nginx访问就正常了。
+
+所以省事起见，wordpress不要放在root。
+
+另外wordpress目录的用户组和目录权限需要为www-data:www-data和755。其中www-data是php7.4-fpm进程的用户组。
 
 本篇文章力求把一些配置，关键步骤解释清楚，不踩无谓的坑。
 
