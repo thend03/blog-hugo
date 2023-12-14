@@ -32,13 +32,29 @@ description: "如何在ubuntu22.04上安装wordpress"
 
 件最新版需要php8.1以上，然后安装这个插件之后各种连接超时，权限问题，我是真的被折磨的有点惨。
 
+
+
 通过Nginx访问wp-admin/install.php，报错connection timeout，各种搜索解决不了。后来灵机一动，把pg4wp插件挪走，php版本从
 
 8.2降到7.4就好了。。。。
 
-嘿，果然安装还是按照文档来，切忌一上来就想
+嘿，果然安装还是按照文档来，切忌一上来就想法比较多，使用其他最新的组件，比如pg。
 
-法比较多，使用其他最新的组件，比如pg
+
+
+***各种403，404，502，504，搜遍英文网站找不到结果，试了又试，错误依旧，绝望，我都有点怀疑自己了。***
+
+
+
+wordpress6.4.2要求php7.4+，但是pg4wp要求php8.1+，虽然一般会版本向下兼容，但是不兼容的事还是被我遇到了,看pg4wp的
+
+readme，在6.4.1上通过了兼容性测试，6.4.2就多了一个小版本，真的是。
+
+![image-20231212222005424](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122220460.png)
+
+![image-20231214222557896](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142225048.png)
+
+
 
 ### 安装文档缺失关键步骤
 
@@ -47,6 +63,14 @@ wordpress有一个经典的五步安装法，但是缺少了一些关键的描�
 做没有详细介绍，导致我进去就掉坑里了。还有一些其他的细节没有补充。
 
 而且基本是英文文档，看下来略微有点吃力。 
+
+这是wordpress开发者网站的安装步骤，我最需要的一步，如何在浏览器里访问install.php没写，让你用web浏览器去访问，用apache还
+
+是用nginx还是别的，一点都没写。
+
+英文文档看下来还是要点时间的。
+
+![image-20231214222836660](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142228755.png)
 
 
 
@@ -64,9 +88,9 @@ wordpress有一个经典的五步安装法，但是缺少了一些关键的描�
 
 ## 前置依赖
 
-Wordpress是一个服务，需要我们部署服务之后去访问wordpress的页面，最少需要一台机器部署wordpress整套服务，如果需要使用域
+Wordpress是一个服务，需要我们部署服务之后去访问wordpress的页面，最少需要一台机器部署wordpress整套服务.
 
-名访问的话，还需要买一个域名，解析到我们机器的ip上才行。
+如果需要使用域名访问的话，还需要买一个域名，解析到我们机器的ip上才行。
 
 
 
@@ -78,6 +102,8 @@ wordpress自身需要如下的组件
 - 一个可用的mysql服务，版本需要5.7或者8.0+
 - 机器上安装Nginx，nginx版本为1.18.0+
 
+
+
 如果需要域名访问，则需要购买一个域名，购买域名之后解析到自己的linux机器上
 
 - 购买一个域名
@@ -85,11 +111,15 @@ wordpress自身需要如下的组件
 
 以下将基于如上的依赖条件，逐步进行安装
 
+
+
 ## 手动安装
 
 安装的机器系统是ubuntu22.04，1c1g的配置，在racknerd上购买的一个低配机器
 
 ubuntu的包管理工具为apt，可以使用apt执行安装、更新、卸载应用等功能
+
+
 
 ### 更新系统
 
@@ -134,11 +164,15 @@ apt install nginx-extras  # version 1.18.0-6ubuntu14.4
 apt install nginx-light   # version 1.18.0-6ubuntu14.4
 ```
 
+
+
 执行如下命令安装nginx
 
 ```shell
 sudo apt install nginx
 ```
+
+
 
 安装完之后查看nginx版本,可以看到不指定版本，默认是安装了1.18.0
 
@@ -146,6 +180,8 @@ sudo apt install nginx
 root@racknerd-7c9c56:~# nginx -v
 nginx version: nginx/1.18.0 (Ubuntu)
 ```
+
+
 
 查看nginx服务状态，当前服务状态正常
 
@@ -176,6 +212,8 @@ Dec 12 13:20:47 racknerd-7c9c56 systemd[1]: Started A high performance web serve
 ### 安装MySQL
 
 nginx安装好之后,我们需要安装mysql。 mysql是wordpress默认的数据库，如果想少折腾，安装mysql是最稳妥的方式。
+
+
 
 #### 安装步骤
 
@@ -266,17 +304,23 @@ Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password123';
 ```
 
+
+
 如下命令会修改root用户的密码为password123
 
 ```sql
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'password123';
 ```
 
+
+
 修改好root密码之后退出
 
 ```
 mysql> exit
 ```
+
+
 
 然后使用账号密码重新登录，输入root密码会再次进入mysql终端
 
@@ -294,6 +338,8 @@ mysql> exit
 mysql> create database wordpress;
 Query OK, 1 row affected (0.01 sec)
 ```
+
+
 
 #### 安全配置(可选)
 
@@ -386,6 +432,8 @@ root@racknerd-7c9c56:~#
 
 以上mysql就安装好了，也为wordpress创建了一个库
 
+
+
 ### 安装php
 
 由于wordpress是php写的，所以需要在机器上安装php，目前最新的wordpress版本是6.4,安装php7.4就好了，不要安装8.0+的版本，
@@ -397,6 +445,8 @@ root@racknerd-7c9c56:~#
 ```sh
 sudo add-apt-repository ppa:ondrej/php
 ```
+
+
 
 执行到下面最后一行提示的时候按enter继续安装
 
@@ -438,6 +488,8 @@ www-data   18998   18996  0 14:04 ?        00:00:00 php-fpm: pool www
 root       19118    2708  0 14:05 pts/0    00:00:00 grep --color=auto fpm
 ```
 
+
+
 后面nginx需要通过unix socket访问，socket地址具体在`/etc/php/7.4/fpm/pool.d/www.conf文件里`，这个配置文件有如下几个配置项值得关注一下
 
 ```
@@ -449,7 +501,7 @@ listen.group = www-data
 
 
 
-`listen = /run/php/php7.4-fpm.sock`这个是后续要配置到nginx配置文件中的地址，nginx通过这个地址访问php-fpm服务，然后访问我们的wordpress文件
+`listen = /run/php/php7.4-fpm.sock`这个是后续要配置到nginx配置文件中的地址，nginx通过这个地址访问php-fpm服务，然后访问我们的wordpress文件。
 
 listen支持unix和port 2种配置方式，二选一
 
@@ -462,6 +514,8 @@ listen = /run/php/php7.4-fpm.sock
 ```
 listen = 127.0.0.1:9000
 ```
+
+
 
 这里配置成哪种格式后面Nginx就配哪种地址，我们这里就采用默认的unix socket的模式就行
 
@@ -489,11 +543,13 @@ listen = 127.0.0.1:9000
 
 ![image-20231212222005424](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122220460.png)
 
+
+
 下载页左边是wordpress的安装包下载地址，当前最新的版本是6.4.2，官方推荐使用php7.4+，mysql5.7+或者mariadb10.4+， mysql
 
 和mariadb算是同一个作者出品的，2者是兼容的，可以算同一种类型的数据库。
 
-下载页右边是主机厂商提供的付费解决方案，wordpress已经帮你搭好了，按需付费购买
+下载页右边是主机厂商提供的付费解决方案，wordpress已经帮你搭好了，需要按需付费购买。我为了省钱以及可控，就选择了自己搭。
 
 
 
@@ -504,13 +560,15 @@ listen = 127.0.0.1:9000
 - 第一种是浏览器页面点击下载，下载到本地之后，通过scp、ftp等方式上传到linux上
 - 另一种是到机器上使用wget下载安装包
 
+
+
 我这里使用第二种，右键复制链接地址，安装包下载地址为https://wordpress.org/latest.zip
 
 ![image-20231212222338476](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122223517.png)
 
 
 
-到机器上执行`wget https://wordpress.org/latest.zip`将安装包下载到linux机器上，这样会方便一点
+到机器上执行`wget https://wordpress.org/latest.zip`将安装包下载到linux机器上，这样下载会方便一点
 
 ```
 root@racknerd-7c9c56:/opt# wget https://wordpress.org/latest.zip
@@ -546,6 +604,8 @@ drwxr-xr-x 19 root root     4096 Aug 10  2022 ../
 sudo apt install unzip
 ```
 
+
+
 wordpress文件结构如下所示
 
 ![image-20231212222818291](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122228332.png)
@@ -579,9 +639,13 @@ drwxr-xr-x 19 root     root         4096 Aug 10  2022 ../
 drwxr-xr-x  5 www-data www-data     4096 Dec  6 16:25 wordpress/
 ```
 
+
+
 #### 生成wp-config.php
 
-从wp-config-sample.php复制一份wp-config.php出来，修改里面的db配置，改为之前本地安装的Mysql的账号密码数据库
+从wp-config-sample.php复制一份wp-config.php出来，修改里面的db配置，改为之前本地安装的Mysql的账号密码数据库。
+
+这一步如果不做的话，在安装页面会引导你填写配置生成一个wp-config.php文件。
 
 ```
 root@racknerd-7c9c56:/opt/wordpress# cp wp-config-sample.php wp-config.php
@@ -603,6 +667,8 @@ nginx配置文件在/etc/nginx/nginx.conf，/etc/nginx/conf.d/用于放自定义
 
 ![image-20231212223029466](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122230518.png)
 
+
+
 #### 自定义wordpress配置文件
 
 不修改默认的配置文件，我们在/etc/nginx/conf.d目录下新建wordpress自己的配置文件
@@ -612,11 +678,15 @@ root@racknerd-7c9c56:/etc/nginx/conf.d# touch wp.conf
 root@racknerd-7c9c56:/etc/nginx/conf.d# vi wp.conf
 ```
 
+
+
 将以下配置更新到wp.conf里,有几个比较重要的配置解释一下
 
 - root，这个地方配置的你的wordpress安装包的路径，配置错误会发生404等错误
 - server_name，这个如果没域名的话就配置localhost
 - fastcgi_pass， 这个地方要配置fpm的服务地址，注意fpm的版本，由于安装的是7.4，所以fastcpgi配置的如下unix地址
+
+
 
 修改好自己机器的实际配置，粘贴到wp.conf，执行:wp 保存配置
 
@@ -658,6 +728,8 @@ server {
 }
 ```
 
+
+
 #### 删除default配置
 
 nginx安装好会有一个default配置，这个配置会影响我们自定义的配置，需要删掉或者重命名这个文件，文件路径为`/etc/nginx/sites-available/default`，执行以下步骤去掉default
@@ -679,6 +751,8 @@ lrwxrwxrwx 1 root root   34 Dec 12 13:20 default -> /etc/nginx/sites-available/d
 root@racknerd-7c9c56:/etc/nginx/sites-enabled# rm -f default
 ```
 
+
+
 #### 确认nginx worker的用户
 
 `/etc/nginx/nginx.conf`的第一行有关于Nginx user的设置，这个需要设置为www-data，和php7.4-fpm保持一致，nginx默认用户就是www-data，检查下即可
@@ -686,6 +760,8 @@ root@racknerd-7c9c56:/etc/nginx/sites-enabled# rm -f default
 ![image-20231212230724371](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122307418.png)
 
 ![image-20231212230754091](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122307134.png)
+
+
 
 #### 验证配置
 
@@ -734,6 +810,8 @@ http://107.173.87.238/wp-admin/install.php
 
 ![image-20231212231737375](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122317427.png)
 
+
+
 输入必要信息之后进行安装，密码可以自定义，也可以用wp生成的强密码
 
 ![image-20231212231852741](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122318793.png)
@@ -742,12 +820,231 @@ http://107.173.87.238/wp-admin/install.php
 
 之后进行登录，就会进入wordpress管理后台，装修自己的网站了
 
+![](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122320967.png)
+
+### 配置ssl
+
+上述步骤使用nginx+wordprss+mysql安装好了wordpress，已经可以访问了。
+
+为了网站安全性以及隐藏服务器ip，下面为我们的网站配置ssl以及域名解析。
+
+配置ss之后，所有的请求都会走https，安全会会得到很大的提高，通过域名访问，也会显得更加的专业，以及保护我们的服务器的ip，减
+
+少被黑的风险。配域名相比ip也比ip更容易记一点。
+
+#### 前置依赖
+
+- 一个属于你的域名，域名需要购买，便宜的比如godaddy上10块，20块左右就能买到一个域名了。其他的google,namecheap之类的也能买到。
+- 一个dns解析器，将域名解析到服务器ip。一般域名厂商都有这个功能。
+
+我个人比较喜欢cloudflare，功能强大，国际知名大厂，个人免费，还好使，支持中文，还能生成免费的ssl证书。
+
+接下来以cloudflare为例，介绍如何配置域名解析，生成ssl证书，以及Nginx如何配置ssl。
+
+#### 生成ssl证书
+
+没账号的可以先注册一个cloudflare账号，用邮箱注册。
+
+打开[cloudflare控制台](https://dash.cloudflare.com/)，需要先将域名托管到cloudflare，才能配置域名解析。其他厂商自行搜索解决。
+
+选中要配置解析的域名，打开左侧的SSL/TLS，选中源服务器，右侧点击创建证书。这个证书是用来安装到服务器上的。
 
 
-![image-20231212232131253](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122321290.png)
+
+![image-20231214224027324](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142240415.png)
 
 
 
-![image-20231212232011910](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122320967.png)
+进入创建页面，会有一些选项，默认即可。主机名对应nginx server{}块里的server_name，可以自定义，创建证书的时候和服务器上配
 
-![image-20231212232021960](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312122320021.png)
+置的server_name保持一致即可。支持通配符。证书有效期最长是15年，够用了。
+
+
+
+![image-20231214224312848](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142243934.png)
+
+点击创建之后，会生成一个key和pem文件。key和pem都是要保存下来放到服务器上的。
+
+私钥只有这一次机会可以复制，关闭这个页面之后就找不到了，所以私钥需要妥善保管，丢失或者遗忘只能重新创建证书了。
+
+和私钥不同，pem文件之后还可以下载。
+
+将源证书内容复制，粘贴到xxx.pem文件里。
+
+将私钥复制，粘贴到xxx.key里。
+
+![image-20231214224625637](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142246713.png)
+
+
+
+点击确定之后，会回到证书页面，可以看到，只能下载pem文件，key文件被隐藏，无法下载与访问了
+
+![image-20231214225104969](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142251054.png)
+
+![image-20231214225118743](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142251832.png)
+
+#### nginx配置强制跳转https
+
+前面几步，我们监听了80端口，这是Nginx的http接口，现在我们要监听443端口(https)，将80端口的请求强制跳转到443端口。
+
+首先进入`/etc/nginx/config.d/`目录，将wp.conf重命名为wp.conf.bak，这样原先的文件就不生效了。
+
+然后执行`touch wp.conf`，重新生成空白的wp.conf文件
+
+```
+cd /etc/nginx/config.d
+mv wp.conf wp.conf.bak
+touch wp.conf
+```
+
+然后将下方的配置文件修改后粘贴到wp.conf里
+
+有如下几次地方需要改成你自己的配置
+
+- 2个server块里的server_name，这个地方要配置为上一步创建证书时选择的主机名，我这里要保护的是三级域名，符合通配条件
+- 记得将ssl_certificate和ssl_certificate_key的位置配置正确
+- 这个域名的日志重新写到新的文件名了，按需放开或者注释掉
+
+其他的配置和之前80的配置一致，没有改动
+
+```
+# Redirect HTTP -> HTTPS
+server {
+	listen 80;
+	server_name www.racknerd.thend03.com racknerd.thend03.com;
+
+	return 301   https://$host$request_uri;
+}
+
+server{
+
+	listen 443 ssl http2;
+	server_name www.racknerd.thend03.com  racknerd.thend03.com;
+
+	root /opt/wordpress;
+	index index.php index.html;
+
+	# SSL parameters
+	ssl_certificate /root/thend03.com.pem;
+	ssl_certificate_key /root/thend03.com.key;
+
+	# log files
+	access_log /var/log/nginx/resource.thend03.com.access.log;
+	error_log /var/log/nginx/resource.thend03.com.error.log;
+
+	location = /favicon.ico {
+		log_not_found off;
+		access_log off;
+	}
+
+	location = /robots.txt {
+		allow all;
+		log_not_found off;
+		access_log off;
+	}
+
+	location / {
+		try_files $uri $uri/ /index.php?$args;
+	}
+
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/run/php/php7.4-fpm.sock;
+	}
+
+	location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg)$ {
+		expires max;
+		log_not_found off;
+	}
+}
+```
+
+#### 在服务器生成证书
+
+基于上面nginx证书的路径配置，在/root目录生成key和pem证书,并且编辑文件，将在cloudflare页面上生成的key和pem字符串复制到对应的文件里。
+
+```
+root@racknerd-7c9c56:/etc/nginx/conf.d# cd /root
+root@racknerd-7c9c56:~# touch thend03.com.pem
+root@racknerd-7c9c56:~# touch thend03.com.key
+root@racknerd-7c9c56:~# vi thend03.com.pem
+root@racknerd-7c9c56:~# vi thend03.com.key
+```
+
+#### 重启nginx
+
+配置好nginx 443配置文件后，执行命令重启nginx
+
+```sh
+root@racknerd-7c9c56:~# sudo systemctl restart nginx
+```
+
+#### cloudflare配置域名解析
+
+nginx处理好之后，回到cloudflare页面，配置域名到ip的解析，添加一条A记录，就可以在访问域名的时候请求到后端服务器。
+
+![image-20231214230521978](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142305079.png)
+
+
+
+添加好之后，在域名管理那可以看到最新添加的解析记录
+
+![image-20231214230543082](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142305173.png)
+
+#### 配置ssl/tls客户端策略
+
+打开SSL/TLS概述，设置下客户端策略，这里选择端到端，加密等级比较高，并且我们使用的是自签名的证书
+
+![image-20231214230802451](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142308546.png)
+
+#### 浏览器访问
+
+解析配置好之后，就是浏览器使用域名访问了。
+
+访问wp-admin管理后台，这时会跳转到ip，需要我们登录进去之后设置一下
+
+![image-20231214231300189](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142313302.png)
+
+
+
+可以看到域名跳转到了ip
+
+![image-20231214231356326](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142313438.png)
+
+打开设置，可以看到现在的站点还是ip的方式。需要修改为域名。
+
+![image-20231214232013465](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142320536.png)
+
+![](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142318072.png)
+
+
+
+再次登录，地址栏就还是域名，没有变成ip。以后都可以用域名的方式访问了。
+
+![image-20231214231714118](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202312142317238.png)
+
+
+
+至此，wordpress的手动部署就告一段落了。后续再介绍宝塔面板，docker,docker-compose之类的安装部署。
+
+以及如何选择模板搭建自己的目标站。
+
+
+
+## 参考链接
+
+[wordpress+postgresql](https://zhangwensheng.cn/posts/20190710_pg_with_wordpress_blog_site/)
+
+[pg4wp plugin](https://github.com/PostgreSQL-For-Wordpress/postgresql-for-wordpress)
+
+[debian安装php8.1](https://www.myfreax.com/how-to-install-php-8-1-on-debian-11/)
+
+[ubuntu安装mysql](https://www.digitalocean.com/community/tutorials/how-to-install-mysql-on-ubuntu-20-04)
+
+[debian安装mysql](https://www.digitalocean.com/community/tutorials/how-to-install-the-latest-mysql-on-debian-10)
+
+[ubuntu18.04安装wordpress](https://www.digitalocean.com/community/tutorials/install-wordpress-nginx-ubuntu)
+
+[nginx+wordpress ssl配置](https://www.hostinger.com/tutorials/how-to-install-wordpress-with-nginx-on-ubuntu/)
+
+[wordpress经典五步安装法](https://developer.wordpress.org/advanced-administration/before-install/howto-install/#step-5-run-the-install-script)
