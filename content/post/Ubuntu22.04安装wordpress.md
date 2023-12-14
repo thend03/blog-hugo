@@ -97,9 +97,9 @@ Wordpress是一个服务，需要我们部署服务之后去访问wordpress的�
 wordpress自身需要如下的组件
 
 - 一台linux机器，我这次安装的机器版本是ubuntu222.04
-- wordpress安装包，在wordpress.org下载最新的安装包
+- wordpress安装包，在wordpress.org下载最新的安装包，最新版本是6.4.2
 - 机器上安装了php，版本最好是7.4
-- 一个可用的mysql服务，版本需要5.7或者8.0+
+- 一个可用的mysql服务，版本需要5.7或者8.0+或者对应版本的mariadb(和mysql同一个作者)
 - 机器上安装Nginx，nginx版本为1.18.0+
 
 
