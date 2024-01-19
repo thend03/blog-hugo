@@ -10,7 +10,7 @@ description: "nginx配置文件使用占位符,读取环境变量替换占位符
 
 ## 背景
 
-此篇是apitable落地的第一篇，实现了私有化部署。
+此篇是apitable落地的第一篇，实现了nginx的可配。
 
 
 
