@@ -76,7 +76,7 @@ nginx配置信息在gateway/conf.d目录下
 
 修改之后的配置文件内容如下
 
-```
+```nginx
 #upstream backend  {
 #   server backend-server:8081;
 #}
@@ -95,7 +95,7 @@ upstream backend  {
 
 使用如下的docker build脚本,在命令行执行`./build_nginx.sh test`打镜像，推到镜像仓库，版本号可以自定义
 
-```
+```shell
 #!/bin/bash
 
 version="$1"
@@ -111,7 +111,7 @@ echo "image url: registry.self.com/apitable/nginx-server:$version"
 
 使用如下的dockerfile生成自己的nginx镜像，替换环境变量的操作在docker-entrypoint.sh里执行
 
-```
+```dockerfile
 FROM --platform=linux/amd64 nginx:latest
 
 # 安装所需组件
@@ -145,7 +145,7 @@ CMD ["nginx", "-g", "daemon off;"]
 
 注意最后一行，不添加最后一行会导致Dockerfile里的cmd无法执行。
 
-```
+```shell
 #!/bin/bash
 
 set -e
@@ -212,7 +212,7 @@ deployment配置如下,  在启动之后使用环境变量替换了占位符
 
 关于service的详细信息可以见文档: [K8S DNS](https://kubernetes.feisky.xyz/setup/addon-list/kube-dns#zhi-chi-de-dns-ge-shi)
 
-```
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -260,7 +260,7 @@ spec:
 
 service如下,使用nodeport进行访问，nodeport相当于在宿主机上起了个端口供外部访问，不然集群地址外部是访问不通的
 
-```
+```yaml
 apiVersion: v1
 kind: Service
 metadata:
