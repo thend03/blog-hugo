@@ -3,12 +3,16 @@ draft: false
 date: 2024-01-18T09:09:37+08:00
 title: "nginx替换占位符"
 slug: "nginx-replace-placeholder" 
-tags: ["nginx","k8s","placeholder"]
+tags: ["apitable","nginx","k8s","placeholder"]
 authors: ["since"]
 description: "nginx配置文件使用占位符,读取环境变量替换占位符"
 ---
 
 ## 背景
+
+此篇是apitable落地的第一篇，实现了私有化部署。
+
+
 
 最近在预研一个开源项目，打算实现本地化部署，在测试环境的k8s集群中部署所有的服务
 
