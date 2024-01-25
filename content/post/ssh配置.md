@@ -12,7 +12,7 @@ ssh在了Iinux系统中有着比较重要的位置，想要远程连接服务器
 
 我有一台海外的vps，系统是ubuntu，由于使用的机场把22端口封了，导致ssh连接vps非常的不方便，连接一直报如下的错
 
-```
+```sh
  ~/ ssh root@107.173.87.238 -p 22
 kex_exchange_identification: Connection closed by remote host
 Connection closed by 107.173.87.238 port 22
@@ -37,7 +37,7 @@ Connection closed by 107.173.87.238 port 22
 
 以账号密码的方式登录,
 
-```
+```sh
  ~/ ssh root@107.173.87.238 -p 22
 root@107.173.87.238's password:
 ```
@@ -55,7 +55,7 @@ root@107.173.87.238's password:
 
 另一种是使用秘钥的方式进行登录，首先是生成公钥和私钥，私钥客户端机器自己留着，公钥上传到服务端机器
 
-```
+```sh
  ~/ ssh -i ~/.ssh/racknerd_107.173.87.238 -p 2222 root@107.173.87.238
 ```
 
@@ -80,7 +80,7 @@ ssh服务端: 我们要连接的目标机器
 
 本次服务端是购买的一台vps，系统是ununtu 22.04 LTS
 
-```
+```sh
 root@racknerd-7c9c56:~# uname -a
 Linux racknerd-7c9c56 5.15.0-76-generic #83-Ubuntu SMP Thu Jun 15 19:16:32 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
 
@@ -120,7 +120,7 @@ ubuntu系统的ssh配置在/ect/ssh下
 
 里面有如下配置项，可以看到配置了2个端口，22和2222，如果sshd_config文件里已经放开了22端口，则可以只添加2222
 
-```
+```sh
 Port 22
 Port 2222
 ```
@@ -129,13 +129,13 @@ Port 2222
 
 使用iptables则执行如下命令
 
-```
+```sh
 iptables -A INPUT -p tcp --dport 2222 -j ACCEPT
 ```
 
 如果使用firewall-cmd则执行如下命令
 
-```
+```sh
 firewall-cmd --zone=public --add-port=2222/tcp --permanent
 firewall-cmd --reload
 ```
@@ -144,13 +144,13 @@ firewall-cmd --reload
 
 然后执行如下命令重启sshd，则服务端的配置就重启好了
 
-```
-sudo service ssd restart
+```sh
+sudo service sshd restart
 ```
 
 执行命令查看ssh端口是否可以启动
 
-```
+```sh
 netstat -nlp|grep 22
 ```
 
@@ -195,7 +195,7 @@ netstat -nlp|grep 22
 
  我们可以使用ssh-keygen命令生成秘钥
 
-```
+```sh
  ~/ ssh-keygen -t rsa -f ~/.ssh/test -b 4096
 Generating public/private rsa key pair.
 Enter passphrase (empty for no passphrase):
@@ -397,7 +397,7 @@ ssh有个配置文件，路径是`~/.ssh/config`，可以在这个文件里面�
 
 我本地有如下3个配置，写在了`~/.ssh/config`文件里
 
-```
+```sh
 Host github.com
   HostName ssh.github.com
   User git
@@ -431,7 +431,7 @@ Host vps-racknerd-pwd
 
 使用vps-racknerd-pwd，还是使用用户密码的方式登录，仍需输入用户对应的密码，优点是少输很多东西
 
-```
+```sh
  /etc/ssh/ ssh vps-racknerd-pwd
 root@107.173.87.238's password:
 root@racknerd-7c9c56:~#
@@ -439,7 +439,7 @@ root@racknerd-7c9c56:~#
 
 使用vps-racknerd-id，使用私钥方式登录，不用输入密码，即可直接连接，只需执行一步就可连接
 
-```
+```sh
  ~/.ssh/ ssh vps-racknerd-id
 root@racknerd-7c9c56:~#
 ```
