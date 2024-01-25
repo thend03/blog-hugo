@@ -473,7 +473,7 @@ Press [ENTER] to continue or Ctrl-c to cancel.
 上面执行完后，再执行以下命令安装php7.4以及相关插件和服务
 
 ```sh
-sudo apt install php7.4 && sudo apt install php7.4-fpm && sudo apt install php7.4-mysql && sudo apt install php7.4-curl && sudo apt install php7.4-xml
+sudo apt install php7.4 php7.4-fpm php7.4-mysql php7.4-curl php7.4-xml
 ```
 
 
