@@ -21,7 +21,7 @@ description: "manjaro环境安装"
 
 
 
-### pacman更换国内镜像源
+### 更换国内镜像源
 
 打开kconsole终端，在命令行输入如下命令
 
@@ -148,9 +148,7 @@ qv2ray的项目解散后，连官网也不维护了，烟消云散，好歹githu
 
 下载好之后，把AppImage拖到桌面，双击就能运行。由于这个版本比较老了，可能没对新的桌面框架做适配，所以桌面快捷方式会运行失败。
 
-然后需要下载v2ray-core，最新的v2ray-core版本和qv2ray不兼容，所以要下载老版本的v2ray-core，才能运行。经过测试,4.45.2版本可
-
-以兼容，所以我们下载4.45.2版本的v2ray-core。
+然后需要下载v2ray-core，最新的v2ray-core版本和qv2ray不兼容，所以要下载老版本的v2ray-core，才能运行。经过测试,4.45.2版本可以兼容，所以我们下载4.45.2版本的v2ray-core。
 
 V2ray-core-4.45.2下载地址: https://github.com/v2fly/v2ray-core/releases/tag/v4.45.2
 
@@ -160,9 +158,7 @@ V2ray-core-4.45.2下载地址: https://github.com/v2fly/v2ray-core/releases/tag/
 
 
 
-下载好v2ray-core之后解压，打开qv2ray首选项-内核设置，设置v2ray-core路径，然后点击检查v2ray核心设置，检查通过v2ray-core配
-
-对就成功了。
+下载好v2ray-core之后解压，打开qv2ray首选项-内核设置，设置v2ray-core路径，然后点击检查v2ray核心设置，检查通过v2ray-core配对就成功了。
 
 ![image-20240207100303182](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071003215.png)
 
@@ -172,17 +168,13 @@ V2ray-core-4.45.2下载地址: https://github.com/v2fly/v2ray-core/releases/tag/
 
 
 
-接下来就是添加订阅链接，打开分组，添加新的组，或者修改默认分组，添加你的机场的订阅链接，添加之后更新订阅，如果更新失败，
-
-切换下订阅类型试试。
+接下来就是添加订阅链接，打开分组，添加新的组，或者修改默认分组，添加你的机场的订阅链接，添加之后更新订阅，如果更新失败，切换下订阅类型试试。
 
 ![image-20240207101011187](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071010224.png)
 
 
 
-如果是ssr之类的协议，可以去github下载对应的插件，放到本地的~/.config/qv2ray/plugins目录下，然后重启qv2ray，点击插件按钮即
-
-可加载插件。
+如果是ssr之类的协议，可以去github下载对应的插件，放到本地的~/.config/qv2ray/plugins目录下，然后重启qv2ray，点击插件按钮即可加载插件。
 
 ssr插件下载地址:  https://github.com/Qv2ray/QvPlugin-SSR/releases/tag/v3.0.0
 
@@ -196,9 +188,7 @@ ssr插件下载地址:  https://github.com/Qv2ray/QvPlugin-SSR/releases/tag/v3.0
 
 #### clash for windows
 
-说是for windows，不过linux也能用。不过clash作者删库跑路了，所以github无法下载，yay也无法安装，只能找互联网残存版本安
-
-装。
+说是for windows，不过linux也能用。不过clash作者删库跑路了，所以github无法下载，yay也无法安装，只能找互联网残存版本安装。
 
 下载地址: https://archive.org/download/clash_for_windows_pkg
 
@@ -289,6 +279,8 @@ yay -S v2raya
 export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890
 ```
 
+
+
 长期的就把配置想到配置文件里，manajaro默认用的是zsh，那么修改~/.zshrc文件, 添加如下2行命令
 
 ````
@@ -296,6 +288,8 @@ alias setproxy="export ALL_PROXY=socks5://127.0.0.1:7890; echo 'SET PROXY SUCCES
 
 alias unsetproxy="unset ALL_PROXY; echo 'UNSET PROXY SUCCESS!!!'"
 ````
+
+
 
 保存之后执行source命令`source ~/.zshrc`
 
@@ -310,6 +304,8 @@ alias unsetproxy="unset ALL_PROXY; echo 'UNSET PROXY SUCCESS!!!'"
 ```sh
 sudo pacman -S proxychains-ng
 ```
+
+
 
 然后修改配置文件，设置代理, 最后一行将socks5代理设置为本地代理端口
 
@@ -335,11 +331,17 @@ proxychains git clone xxx
 
 学习和解决问题的成本。
 
+
+
 本篇介绍我本人比较喜欢的一款基于rime的输入法，在manjaro可用，如需其他的比如搜狗linux输入法，本文不涉及。
 
 选这款输入法主要是被它的颜值吸引，基于rime封装之后，解决了大部分的问题，当然在linux下的开源项目，总归会遇到各种各样千奇
 
-百怪的bug。既然选择了linux，就直面恐惧，直面问题吧。
+百怪的bug。
+
+
+
+既然选择了linux，就直面恐惧，直面问题吧。
 
 
 
@@ -381,6 +383,8 @@ export LC_CTYPE="zh_CN.UTF-8"
 ![image-20240206164217643](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402061642673.png)
 
 如上图所示，fcitx5就启用了
+
+
 
 #### 安装rime
 
@@ -465,6 +469,8 @@ fcitx5可以使用搜狗皮肤美化，具体的可以参考如下的教程
 | fcitx  | ~/.config/fcitx/rime       |
 | fcitx5 | ~/.local/share/fcitx5/rime |
 
+
+
 我这里使用的是fcitx5，但是皮肤最终的路径是在~/.local/share/fcitx5/themes，这个要注意下
 
 ![image-20240206170148217](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402061701245.png)
@@ -519,15 +525,17 @@ https://github.com/ayamir/fcitx5-gruvbox
 sudo pacman -S flameshot
 ```
 
+
+
 安装好后可以在搜索栏搜索flameshot启动, 启动之后可以在系统托盘处点击火焰截图进行截图
 
 ![image-20240207143857294](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071438337.png)
 
+
+
 上面使用起来会有点不方便，需要为火焰截图设置快捷键截图
 
-打开系统设置，快捷键，如果搜不到火焰截图，就点击下方添加应用程序进行添加，添加好之后，设置截图快捷键，以后就可以使用快捷
-
-键截图了。
+打开系统设置，快捷键，如果搜不到火焰截图，就点击下方添加应用程序进行添加，添加好之后，设置截图快捷键，以后就可以使用快捷键截图了。
 
 ![image-20240207144342026](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071443075.png)
 
@@ -692,6 +700,8 @@ yay -S linux-wifi-hotspot
 
 kde的桌面ui排布和windows相似，本次美化的目标是把桌面美化成mac风格
 
+
+
 #### 主题/应用程序/图标/窗口风格
 
 先说主题，系统设置-外观-plasma视觉风格-获取新plasma视觉风格，搜索`MacBreeze Shadowless`，然后点击安装，安装完成之后点击使用此主题
@@ -705,6 +715,10 @@ kde的桌面ui排布和windows相似，本次美化的目标是把桌面美化�
 
 
 ![image-20240207155223499](/Users/since/Library/Application Support/typora-user-images/image-20240207155223499.png)
+
+
+
+
 
 
 
@@ -722,6 +736,10 @@ kde的桌面ui排布和windows相似，本次美化的目标是把桌面美化�
 
 ![image-20240207155348176](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071553288.png)
 
+
+
+
+
 修改图标，系统设置-外观-全局主题-图标, 获取新图标，搜索`Mojave CT icons`安装并使用
 
 ![image-20240207155505160](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071555273.png)
@@ -731,6 +749,8 @@ kde的桌面ui排布和windows相似，本次美化的目标是把桌面美化�
 
 
 系统设置-外观-窗口装饰元素-获取新窗口装饰，搜索`McMojave Aurorae`,安装并使用
+
+
 
 #### 顶栏设置
 
@@ -750,17 +770,31 @@ Manjaro kde的任务面板和windows类似，是在底部，那么为了仿Mac�
 
 ![image-20240207163935357](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071639416.png)
 
+
+
 下面进行顶栏的设置，点击添加部件，添加如下部件: 应用程序启动器，锁定/注销、系统托盘、数字时钟等
 
 ![image-20240207164023244](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071640365.png)
+
+
+
+
 
 然后为顶栏添加2个间距用于使用时钟分隔左右，2个蓝色的条就是间距，全局菜单就是其他应用的设置按钮菜单
 
 ![image-20240207164306007](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071643073.png)
 
+
+
+
+
 然后调整顶栏布局，将应用程序启动器放在顶栏的最左边，然后在它的右边放全局菜单，然后再右边放间隔，后面依次放数字时钟、间
 
 隔、锁定/注销、系统托盘。这样应用程序启动器就会固定在最左边
+
+
+
+
 
 最终效果如下
 
@@ -771,6 +805,12 @@ Manjaro kde的任务面板和windows类似，是在底部，那么为了仿Mac�
 应用程序启动器的图标要改成mac，右键点击应用程序启动器，选择配置应用程序启动器
 
 ![image-20240207164540551](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071645649.png)
+
+
+
+
+
+
 
 修改图标，选择本地图标即可
 
@@ -784,6 +824,10 @@ Manjaro kde的任务面板和windows类似，是在底部，那么为了仿Mac�
 
 ![icons8-mac-os](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071649679.svg)
 
+
+
+
+
 #### 安装latte-dock
 
 要想实现和mac一样的dock效果，需要安装latte-dock，安装好之后，应用程序搜索latte-dock启动即可
@@ -792,9 +836,17 @@ Manjaro kde的任务面板和windows类似，是在底部，那么为了仿Mac�
 sudo pacman -S latte-dock
 ```
 
+
+
+
+
 启动之后效果如下，其他设置可以自行更改
 
 ![image-20240207165217483](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071652577.png)
+
+
+
+
 
 #### 安装nautilus
 
@@ -804,17 +856,33 @@ sudo pacman -S latte-dock
 sudo pacman -S nautilus
 ```
 
+
+
+
+
 然后点击系统设置-应用程序-默认应用程序-文件管理器，选择文件即可
 
 ![image-20240207165612819](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071656914.png)
+
+
+
+
 
 #### 更换壁纸
 
 桌面右键-配置桌面和壁纸，选择喜欢的壁纸即可
 
+
+
+
+
 ## 小结
 
 经过如上的配置，一个基本可用的仿mac系统的manjaro就基本好了，后面有其他的更新就再补充
+
+
+
+
 
 ## 参考链接
 
