@@ -694,9 +694,7 @@ yay -S linux-wifi-hotspot
 
 ![sc4.png](https://github.com/lakinduakash/linux-wifi-hotspot/blob/master/docs/sc4.png?raw=true)
 
-
-
-## 美化系统
+### 美化系统
 
 kde的桌面ui排布和windows相似，本次美化的目标是把桌面美化成mac风格
 
@@ -714,7 +712,7 @@ kde的桌面ui排布和windows相似，本次美化的目标是把桌面美化�
 
 
 
-![image-20240207155223499](/Users/since/Library/Application Support/typora-user-images/image-20240207155223499.png)
+![image-20240207155223499](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071719192.png)
 
 
 
@@ -722,9 +720,7 @@ kde的桌面ui排布和windows相似，本次美化的目标是把桌面美化�
 
 
 
-然后设置应用程序风格，系统设置-外观-应用程序风格-配置GNOME/GTK应用程序风格-获取新GNOME/GTK应用程序风格，搜索
-
-`McMojave`， 选择喜欢的类型，安装然后使用。
+然后设置应用程序风格，系统设置-外观-应用程序风格-配置GNOME/GTK应用程序风格-获取新GNOME/GTK应用程序风格，搜索`McMojave`， 选择喜欢的类型，安装然后使用。
 
 
 
@@ -766,9 +762,13 @@ Manjaro kde的任务面板和windows类似，是在底部，那么为了仿Mac�
 
 
 
+
+
 在桌面右键选择，添加面板-应用程序菜单栏。
 
 ![image-20240207163935357](https://cdn.jsdelivr.net/gh/thend03/mdPic/picGo/202402071639416.png)
+
+
 
 
 
