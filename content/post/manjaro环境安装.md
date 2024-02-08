@@ -1,12 +1,12 @@
 ---
 draft: false
 date: 2024-02-06T15:36:27+08:00
-title: "manjaro环境安装"
-slug: "manjaro-env-install" 
+title: "manjaro环境配置"
+slug: "manjaro-env-config" 
 tags: ["manjaro"]
-categories: ["manjarp"]
+categories: ["manjaro"]
 authors: ["since"]
-description: "manjaro环境安装"
+description: "manjaro环境配置"
 ---
 
 ## 前言
@@ -112,7 +112,9 @@ sudo pacman -Syyu
 
 
 
-### 安装base-devel，支持yay构建包
+### 安装base-devel
+
+安装基础构建包
 
 ```sh
 sudo pacman -S base-devel
