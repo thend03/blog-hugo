@@ -1,7 +1,7 @@
 baseURL = "https://blog.thend03.com/"
 languageCode = "zh-cn"
 defaultContentLanguage = "zh-cn"                             # en / zh-cn / ... (This field determines which i18n file to use)
-title = "fayy&fc - A super concise theme for Hugo"
+title = "fayy&fc's blog"
 preserveTaxonomyNames = true
 enableRobotsTXT = true
 enableEmoji = true
@@ -214,7 +214,9 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
 # see https://gohugo.io/getting-started/configuration-markup
 [markup]
   [markup.tableOfContents]
-    startLevel = 1
+    endLevel = 4
+    ordered = false
+    startLevel = 2
   [markup.goldmark.renderer]
     unsafe = true
 
