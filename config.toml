@@ -216,7 +216,7 @@ copyright = ""            # default: author.name ↓        # 默认为下面配
   [markup.tableOfContents]
     endLevel = 4
     ordered = false
-    startLevel = 2
+    startLevel = 1
   [markup.goldmark.renderer]
     unsafe = true
 
